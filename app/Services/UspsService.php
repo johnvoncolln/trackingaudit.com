@@ -38,6 +38,23 @@ class UspsService
 
         throw new \Exception('Failed to fetch USPS access token: ' . $response->body());
     }
+
+    public function fetchTrackingDetails(string $trackingNumber)
+    {
+        $token = $this->getAccessToken();
+
+        $response = Http::withHeaders([
+            'Authorization' => "Bearer {$token}",
+            'Content-Type' => 'application/json',
+            'Accept' => 'application/json',
+        ])->get("{$this->config['track_url']}/{$trackingNumber}");
+
+        if ($response->successful()) {
+            return $response->json();
+        }
+
+        throw new \Exception('Failed to fetch USPS tracking details: ' . $response->body());
+    }
 <<<<<<< HEAD
 =======
 
