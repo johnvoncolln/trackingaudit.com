@@ -26,7 +26,7 @@ class FedexTrackingNumber implements ValidationRule
             '/^\d{20}$/',
             '/^\d{22}$/',
             '/^\d{34}$/',
-            '/^96\d{19}$/',  // Changed from 20 to 19 digits after '96' prefix since total should be 21 digits
+            '/^96\d{20}$/',  // 96 prefix + 20 digits = 22 digits total
             '/^7\d{10}$/'  // Changed from 11 to 10 digits after the '7' prefix
         ];
 
