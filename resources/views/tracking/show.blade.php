@@ -4,17 +4,9 @@
             <h2 class="font-semibold text-xl text-gray-800 leading-tight">
                 {{ __('Tracking Details') }}
             </h2>
-            <div class="flex space-x-4">
-                <form method="POST" action="{{ route('tracking.update', $tracker) }}">
-                    @csrf
-                    <x-button>
-                        {{ __('Update') }}
-                    </x-button>
-                </form>
-                <a href="{{ route('tracking.index') }}" class="inline-flex items-center px-4 py-2 bg-gray-800 border border-transparent rounded-md font-semibold text-xs text-white uppercase tracking-widest hover:bg-gray-700">
-                    {{ __('Back to List') }}
-                </a>
-            </div>
+            <a href="{{ route('tracking.index') }}" class="inline-flex items-center px-4 py-2 bg-gray-800 border border-transparent rounded-md font-semibold text-xs text-white uppercase tracking-widest hover:bg-gray-700">
+                {{ __('Back to List') }}
+            </a>
         </div>
     </x-slot>
 
@@ -22,12 +14,21 @@
         <div class="max-w-7xl mx-auto sm:px-6 lg:px-8">
             <div class="bg-white overflow-hidden shadow-xl sm:rounded-lg">
                 <div class="p-6">
-                    <x-section-title>
-                        <x-slot name="title">Shipment Information</x-slot>
-                        <x-slot name="description">Detailed tracking information for this shipment.</x-slot>
-                    </x-section-title>
+                    <div class="flex justify-between items-start mb-4">
+                        <x-section-title>
+                            <x-slot name="title">Shipment Information</x-slot>
+                            <x-slot name="description">Detailed tracking information for this shipment.</x-slot>
+                        </x-section-title>
+                        
+                        <form method="POST" action="{{ route('tracking.update', $tracker) }}">
+                            @csrf
+                            <x-button>
+                                {{ __('Update') }}
+                            </x-button>
+                        </form>
+                    </div>
 
-                    <div class="mt-5 md:mt-0 md:col-span-2">
+                    <div class="md:col-span-2">
                         <div class="px-4 py-5">
                             <dl class="grid grid-cols-1 gap-x-4 gap-y-8 sm:grid-cols-2">
                                 <div class="sm:col-span-1">
