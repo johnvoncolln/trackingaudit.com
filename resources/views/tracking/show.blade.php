@@ -66,47 +66,36 @@
 
                         <div class="mt-5 md:mt-0 md:col-span-2">
                             <div class="px-4 py-5">
-                                <div class="flow-root">
-                                    <ul role="list" class="-mb-8">
+                                <table class="table-auto w-full border-collapse border border-gray-200">
+                                    <thead>
+                                        <tr class="bg-gray-100">
+                                            <th class="border px-4 py-2">Activity</th>
+                                            <th class="border px-4 py-2">Location</th>
+                                            <th class="border px-4 py-2">Date</th>
+                                            <th class="border px-4 py-2">Time</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
                                         @foreach($tracker->trackerData->data['trackResponse']['shipment'][0]['package'][0]['activity'] as $activity)
-                                            <li>
-                                                <div class="relative pb-8">
-                                                    @if(!$loop->last)
-                                                        <span class="absolute left-4 top-4 -ml-px h-full w-0.5 bg-gray-200" aria-hidden="true"></span>
-                                                    @endif
-                                                    <div class="relative flex space-x-3">
-                                                        <div>
-                                                            <span class="h-8 w-8 rounded-full bg-gray-400 flex items-center justify-center ring-8 ring-white">
-                                                                <svg class="h-5 w-5 text-white" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor">
-                                                                    <path fill-rule="evenodd" d="M10 2a8 8 0 100 16 8 8 0 000-16zm0 14a6 6 0 100-12 6 6 0 000 12z" clip-rule="evenodd" />
-                                                                </svg>
-                                                            </span>
-                                                        </div>
-                                                        <div class="flex min-w-0 flex-1 justify-between space-x-4 pt-1.5">
-                                                            <div>
-                                                                <p class="text-sm text-gray-500">{{ $activity['status']['description'] ?? 'N/A' }}</p>
-                                                                <p class="text-sm text-gray-500">
-                                                                    {{ isset($activity['location']) ? implode(', ', array_filter([
-                                                                        $activity['location']['address']['city'] ?? null,
-                                                                        $activity['location']['address']['stateProvince'] ?? null,
-                                                                        $activity['location']['address']['countryCode'] ?? null
-                                                                    ])) : 'N/A' }}
-                                                                </p>
-                                                            </div>
-                                                            <div class="whitespace-nowrap text-right text-sm text-gray-500">
-                                                                @if(isset($activity['date'], $activity['time']))
-                                                                    {{ \Carbon\Carbon::createFromFormat('Ymd His', $activity['date'] . ' ' . $activity['time'])->format('M j, Y g:ia') }}
-                                                                @else
-                                                                    N/A
-                                                                @endif
-                                                            </div>
-                                                        </div>
-                                                    </div>
-                                                </div>
-                                            </li>
+                                            @php
+                                                $formattedDate = isset($activity['date']) ? \Carbon\Carbon::createFromFormat('Ymd', $activity['date'])->format('F j, Y') : 'N/A';
+                                                $formattedTime = isset($activity['time']) ? \Carbon\Carbon::createFromFormat('His', $activity['time'])->format('h:i A') : 'N/A';
+                                            @endphp
+                                            <tr>
+                                                <td class="border px-4 py-2">{{ $activity['status']['description'] ?? 'N/A' }}</td>
+                                                <td class="border px-4 py-2">
+                                                    {{ isset($activity['location']) ? implode(', ', array_filter([
+                                                        $activity['location']['address']['city'] ?? null,
+                                                        $activity['location']['address']['stateProvince'] ?? null,
+                                                        $activity['location']['address']['countryCode'] ?? null
+                                                    ])) : 'N/A' }}
+                                                </td>
+                                                <td class="border px-4 py-2">{{ $formattedDate }}</td>
+                                                <td class="border px-4 py-2">{{ $formattedTime }}</td>
+                                            </tr>
                                         @endforeach
-                                    </ul>
-                                </div>
+                                    </tbody>
+                                </table>
                             </div>
                         </div>
                     @endif
