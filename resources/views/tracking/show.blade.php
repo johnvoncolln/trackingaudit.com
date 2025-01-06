@@ -19,17 +19,19 @@
                             <x-slot name="title">Shipment Information</x-slot>
                             <x-slot name="description">Detailed tracking information for this shipment.</x-slot>
                         </x-section-title>
-                        
+
                         <div class="flex items-center space-x-4">
                             <span class="text-sm text-gray-600">
                                 Last Updated: {{ $tracker->updated_at->format('M j, Y g:ia') }}
                             </span>
-                            <form method="POST" action="{{ route('tracking.update', $tracker) }}">
-                                @csrf
-                                <x-button class="ml-4">
-                                    {{ __('Update') }}
-                                </x-button>
-                            </form>
+                            <div class="pl-4">
+                                <form method="POST" action="{{ route('tracking.update', $tracker) }}">
+                                    @csrf
+                                    <x-button>
+                                        {{ __('Update') }}
+                                    </x-button>
+                                </form>
+                            </div>
                         </div>
                     </div>
 
