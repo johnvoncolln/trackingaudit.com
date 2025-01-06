@@ -47,6 +47,7 @@ class TrackingController extends Controller
             $tracker = Tracker::firstOrCreate(
                 ['tracking_number' => $request->tracking_number],
                 [
+                    'user_id' => $request->user()->id,
                     'carrier' => 'UPS',
                     'reference_id' => $request->reference_id,
                     'reference_name' => $request->reference_name
@@ -64,10 +65,10 @@ class TrackingController extends Controller
                 if ($latestActivity) {
                     $tracker->update([
                         'status' => $latestActivity['status']['description'] ?? null,
-                        'status_time' => isset($latestActivity['date'], $latestActivity['time']) 
+                        'status_time' => isset($latestActivity['date'], $latestActivity['time'])
                             ? date('Y-m-d H:i:s', strtotime($latestActivity['date'] . ' ' . $latestActivity['time']))
                             : null,
-                        'location' => isset($latestActivity['location']) 
+                        'location' => isset($latestActivity['location'])
                             ? implode(', ', array_filter([
                                 $latestActivity['location']['address']['city'] ?? null,
                                 $latestActivity['location']['address']['stateProvince'] ?? null,
@@ -80,11 +81,10 @@ class TrackingController extends Controller
 
             // Create or update tracker data
             // Format and clean the JSON data before storage
-            $formattedJson = json_encode($trackingInfo, JSON_UNESCAPED_SLASHES | JSON_UNESCAPED_UNICODE);
-            
+
             TrackerData::updateOrCreate(
                 ['trackers_id' => $tracker->id],
-                ['data' => $formattedJson]
+                ['data' => $trackingInfo]
             );
 
             return view('tracking.results', [

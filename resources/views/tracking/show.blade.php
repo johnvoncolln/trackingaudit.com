@@ -58,7 +58,7 @@
 
                     @if($tracker->trackerData && isset($tracker->trackerData->data['trackResponse']['shipment'][0]['package'][0]['activity']))
                         <x-section-border />
-                        
+
                         <x-section-title>
                             <x-slot name="title">Tracking History</x-slot>
                             <x-slot name="description">Complete history of tracking events.</x-slot>
