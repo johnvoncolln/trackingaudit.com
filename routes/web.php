@@ -18,4 +18,5 @@ Route::middleware([
     Route::get('/tracking', [TrackingController::class, 'index'])->name('tracking.index');
     Route::get('/tracking/new', [TrackingController::class, 'showForm'])->name('tracking.form');
     Route::post('/tracking', [TrackingController::class, 'track'])->name('tracking.track');
+    Route::get('/tracking/{tracker}', [TrackingController::class, 'show'])->name('tracking.show');
 });

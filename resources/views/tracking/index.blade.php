@@ -39,7 +39,9 @@
                                 @foreach ($trackers as $tracker)
                                     <tr>
                                         <td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">
-                                            {{ $tracker->tracking_number }}
+                                            <a href="{{ route('tracking.show', $tracker) }}" class="text-indigo-600 hover:text-indigo-900">
+                                                {{ $tracker->tracking_number }}
+                                            </a>
                                         </td>
                                         <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
                                             {{ $tracker->carrier }}

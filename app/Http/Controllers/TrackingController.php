@@ -27,6 +27,11 @@ class TrackingController extends Controller
         return view('tracking.form');
     }
 
+    public function show(Tracker $tracker)
+    {
+        return view('tracking.show', compact('tracker'));
+    }
+
     public function track(Request $request)
     {
         $request->validate([
