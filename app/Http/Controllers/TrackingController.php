@@ -124,18 +124,13 @@ class TrackingController extends Controller
                 }
             }
 
-            // Create or update tracker data
-            // Format and clean the JSON data before storage
-
             TrackerData::updateOrCreate(
                 ['trackers_id' => $tracker->id],
                 ['data' => $trackingInfo]
             );
 
-            return view('tracking.results', [
-                'trackingInfo' => $trackingInfo,
-                'tracker' => $tracker
-            ]);
+            return view('tracking.show', ['tracker' => $tracker]);
+
         } catch (\Exception $e) {
             return back()->withErrors(['error' => 'Unable to retrieve tracking details. Please try again.']);
         }
