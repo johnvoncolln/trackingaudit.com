@@ -15,6 +15,7 @@ Route::middleware([
     Route::get('/dashboard', function () {
         return view('dashboard');
     })->name('dashboard');
-    Route::get('/tracking', [TrackingController::class, 'showForm'])->name('tracking.form');
+    Route::get('/tracking', [TrackingController::class, 'index'])->name('tracking.index');
+    Route::get('/tracking/new', [TrackingController::class, 'showForm'])->name('tracking.form');
     Route::post('/tracking', [TrackingController::class, 'track'])->name('tracking.track');
 });
