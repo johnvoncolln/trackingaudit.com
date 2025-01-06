@@ -38,4 +38,22 @@ class UspsService
 
         throw new \Exception('Failed to fetch USPS access token: ' . $response->body());
     }
+<<<<<<< HEAD
+=======
+
+    public function fetchTrackingDetails(string $trackingNumber)
+    {
+        $token = $this->getAccessToken();
+
+        $response = Http::withHeaders([
+            'Authorization' => "Bearer {$token}",
+        ])->get("{$this->config['track_url']}/{$trackingNumber}");
+
+        if ($response->successful()) {
+            return $response->json();
+        }
+
+        throw new \Exception('Failed to fetch USPS tracking details: ' . $response->body());
+    }
+>>>>>>> parent of b0eb3f0 (fix: Update USPS API authentication and headers for tracking service)
 }
