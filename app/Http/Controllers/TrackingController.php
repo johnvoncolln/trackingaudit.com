@@ -30,6 +30,7 @@ class TrackingController extends Controller
 
     public function show(Tracker $tracker)
     {
+        $tracker->load('trackerData');
         return view('tracking.show', compact('tracker'));
     }
 
