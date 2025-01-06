@@ -23,17 +23,13 @@ class UspsTrackingNumber implements ValidationRule
         // - [A-Z]{2}\d{9}[A-Z]{2} (2 letters + 9 digits + 2 letters)
 
         $patterns = [
-            '/^\d{20}$/',
-            '/^\d{26}$/',
-            '/^\d{30}$/',
-            '/^91\d{20}$/',
-            '/^92\d{20}$/',
-            '/^93\d{20}$/',
-            '/^94\d{20}$/',
-            '/^95\d{20}$/',
-            '/^\d{2}\d{9}[A-Z]{2}\d{8}$/',
-            '/^EC\d{9}US$/',
-            '/^[A-Z]{2}\d{9}[A-Z]{2}$/'
+            '/^\d{20}$/',                     // 20 digits
+            '/^\d{26}$/',                     // 26 digits
+            '/^\d{30}$/',                     // 30 digits
+            '/^9[1-5]\d{20}$/',              // 91-95 prefix + 20 digits
+            '/^\d{2}\d{9}[A-Z]{2}\d{8}$/',   // 2 digits + 9 digits + 2 letters + 8 digits
+            '/^EC\d{9}US$/',                  // EC + 9 digits + US
+            '/^[A-Z]{2}\d{9}[A-Z]{2}$/'      // 2 letters + 9 digits + 2 letters
         ];
 
         $isValid = false;
