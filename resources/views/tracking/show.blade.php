@@ -21,12 +21,12 @@
                         </x-section-title>
                         
                         <div class="flex items-center space-x-4">
-                            <span class="text-sm text-gray-600 mr-4">
+                            <span class="text-sm text-gray-600">
                                 Last Updated: {{ $tracker->updated_at->format('M j, Y g:ia') }}
                             </span>
                             <form method="POST" action="{{ route('tracking.update', $tracker) }}">
                                 @csrf
-                                <x-button>
+                                <x-button class="ml-4">
                                     {{ __('Update') }}
                                 </x-button>
                             </form>
