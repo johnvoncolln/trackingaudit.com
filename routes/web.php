@@ -19,6 +19,7 @@ Route::middleware([
     Route::get('/tracking/new', [TrackingController::class, 'showForm'])->name('tracking.form');
     Route::post('/tracking', [TrackingController::class, 'track'])->name('tracking.track');
     Route::post('/tracking/import', [TrackingController::class, 'import'])->name('tracking.import');
+    Route::get('/tracking/template', [TrackingController::class, 'downloadTemplate'])->name('tracking.template');
     Route::get('/tracking/{tracker}', [TrackingController::class, 'show'])->name('tracking.show');
     Route::post('/tracking/{tracker}/update', [TrackingController::class, 'update'])->name('tracking.update');
 });

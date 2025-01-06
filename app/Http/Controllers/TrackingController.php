@@ -7,6 +7,7 @@ use App\Models\TrackerData;
 use App\Rules\UpsTrackingNumber;
 use Illuminate\Support\Facades\Validator;
 use League\Csv\Reader;
+use League\Csv\Writer;
 use App\Services\UpsService;
 use Illuminate\Http\Request;
 
@@ -204,5 +205,30 @@ class TrackingController extends Controller
         } catch (\Exception $e) {
             return back()->withErrors(['error' => 'Unable to retrieve tracking details. Please try again.']);
         }
+    }
+
+    public function downloadTemplate()
+    {
+        $headers = [
+            'tracking_number',
+            'reference_id',
+            'reference_name',
+            'reference_data',
+            'recipient_name',
+            'recipient_email'
+        ];
+
+        $csv = Writer::createFromString('');
+        $csv->insertOne($headers);
+
+        $headers = [
+            'Content-Type' => 'text/csv',
+            'Content-Disposition' => 'attachment; filename="tracking-import-template.csv"',
+            'Cache-Control' => 'no-cache, no-store, must-revalidate',
+            'Pragma' => 'no-cache',
+            'Expires' => '0'
+        ];
+
+        return response((string) $csv, 200, $headers);
     }
 }

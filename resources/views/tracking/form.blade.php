@@ -61,9 +61,14 @@
                     <div class="max-w-xl">
                         <section>
                             <header>
-                                <h2 class="text-lg font-medium text-gray-900">
-                                    {{ __('Bulk Import Tracking Numbers') }}
-                                </h2>
+                                <div class="flex justify-between items-center">
+                                    <h2 class="text-lg font-medium text-gray-900">
+                                        {{ __('Bulk Import Tracking Numbers') }}
+                                    </h2>
+                                    <a href="{{ route('tracking.template') }}" class="text-sm text-indigo-600 hover:text-indigo-900">
+                                        {{ __('Download Template') }}
+                                    </a>
+                                </div>
 
                                 <p class="mt-1 text-sm text-gray-600">
                                     {{ __('Upload a CSV file containing up to 500 tracking numbers.') }}
