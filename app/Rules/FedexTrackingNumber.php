@@ -27,7 +27,7 @@ class FedexTrackingNumber implements ValidationRule
             '/^\d{22}$/',
             '/^\d{34}$/',
             '/^96\d{20}$/',
-            '/^7\d{11}$/'
+            '/^7\d{10}$/'  // Changed from 11 to 10 digits after the '7' prefix
         ];
 
         $isValid = false;
