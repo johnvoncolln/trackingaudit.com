@@ -80,7 +80,7 @@ class TrackingController extends Controller
             // Create or update tracker data
             TrackerData::updateOrCreate(
                 ['trackers_id' => $tracker->id],
-                ['data' => json_encode($trackingInfo)]
+                ['data' => json_encode($trackingInfo, JSON_PRETTY_PRINT | JSON_UNESCAPED_SLASHES | JSON_UNESCAPED_UNICODE)]
             );
 
             return view('tracking.results', [
