@@ -15,8 +15,8 @@ class UspsTrackingNumberTest extends TestCase
         $this->rule = new UspsTrackingNumber();
     }
 
-    #[DataProvider('validTrackingNumbersProvider')]
-    public function test_valid_tracking_numbers_pass_validation($trackingNumber)
+    #[\PHPUnit\Framework\Attributes\DataProvider('validTrackingNumbersProvider')]
+    public function test_valid_tracking_numbers_pass_validation(string $trackingNumber)
     {
         $fails = false;
         $this->rule->validate('tracking_number', $trackingNumber, function() use (&$fails) {
@@ -26,8 +26,8 @@ class UspsTrackingNumberTest extends TestCase
         $this->assertFalse($fails, "Tracking number {$trackingNumber} should be valid");
     }
 
-    #[DataProvider('invalidTrackingNumbersProvider')]
-    public function test_invalid_tracking_numbers_fail_validation($trackingNumber)
+    #[\PHPUnit\Framework\Attributes\DataProvider('invalidTrackingNumbersProvider')]
+    public function test_invalid_tracking_numbers_fail_validation(string $trackingNumber)
     {
         $fails = false;
         $this->rule->validate('tracking_number', $trackingNumber, function() use (&$fails) {
