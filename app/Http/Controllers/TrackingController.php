@@ -5,6 +5,8 @@ namespace App\Http\Controllers;
 use App\Models\Tracker;
 use App\Models\TrackerData;
 use App\Rules\UpsTrackingNumber;
+use Illuminate\Support\Facades\Validator;
+use League\Csv\Reader;
 use App\Services\UpsService;
 use Illuminate\Http\Request;
 
@@ -76,6 +78,74 @@ class TrackingController extends Controller
             return redirect()->route('tracking.show', $tracker)
                 ->with('flash.banner', 'Unable to update tracking details. Please try again.')
                 ->with('flash.bannerStyle', 'danger');
+        }
+    }
+
+    public function import(Request $request)
+    {
+        $request->validate([
+            'csv_file' => ['required', 'file', 'mimes:csv,txt', 'max:2048'], // 2MB max
+        ]);
+
+        try {
+            $csv = Reader::createFromPath($request->file('csv_file')->getPathname());
+            $csv->setHeaderOffset(0);
+
+            $records = iterator_to_array($csv->getRecords());
+
+            if (count($records) > 500) {
+                return back()->withErrors(['csv_file' => 'CSV file contains more than 500 records.']);
+            }
+
+            // Validate required columns
+            $headers = $csv->getHeader();
+            if (!in_array('tracking_number', $headers)) {
+                return back()->withErrors(['csv_file' => 'CSV file must contain a tracking_number column.']);
+            }
+
+            $validRecords = 0;
+            $failedRecords = 0;
+
+            foreach ($records as $record) {
+                $validator = Validator::make($record, [
+                    'tracking_number' => ['required', 'string', 'max:50', new UpsTrackingNumber],
+                    'reference_id' => ['nullable', 'string', 'max:50'],
+                    'reference_name' => ['nullable', 'string', 'max:100'],
+                    'reference_data' => ['nullable', 'string'],
+                    'recipient_name' => ['nullable', 'string', 'max:100'],
+                    'recipient_email' => ['nullable', 'email', 'max:100'],
+                ]);
+
+                if ($validator->fails()) {
+                    $failedRecords++;
+                    continue;
+                }
+
+                Tracker::create([
+                    'user_id' => $request->user()->id,
+                    'carrier' => 'UPS',
+                    'tracking_number' => $record['tracking_number'],
+                    'reference_id' => $record['reference_id'] ?? null,
+                    'reference_name' => $record['reference_name'] ?? null,
+                    'reference_data' => isset($record['reference_data']) ? json_decode($record['reference_data'], true) : null,
+                    'recipient_name' => $record['recipient_name'] ?? null,
+                    'recipient_email' => $record['recipient_email'] ?? null,
+                ]);
+
+                $validRecords++;
+            }
+
+            $message = "Successfully imported {$validRecords} tracking numbers.";
+            if ($failedRecords > 0) {
+                $message .= " {$failedRecords} records failed validation.";
+            }
+
+            return redirect()->route('tracking.index')
+                ->with('flash.banner', $message)
+                ->with('flash.bannerStyle', $failedRecords > 0 ? 'warning' : 'success');
+
+        } catch (\Exception $e) {
+            return back()->withErrors(['csv_file' => 'Error processing CSV file: ' . $e->getMessage()]);
         }
     }
 
