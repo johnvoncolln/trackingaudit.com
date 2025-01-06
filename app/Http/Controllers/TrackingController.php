@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\Tracker;
 use App\Models\TrackerData;
+use App\Rules\UpsTrackingNumber;
 use App\Services\UpsService;
 use Illuminate\Http\Request;
 
@@ -35,7 +36,9 @@ class TrackingController extends Controller
     public function track(Request $request)
     {
         $request->validate([
-            'tracking_number' => 'required|string|max:50',
+            'tracking_number' => ['required', 'string', 'max:50', new UpsTrackingNumber],
+            'reference_id' => ['nullable', 'string', 'max:50'],
+            'reference_name' => ['nullable', 'string', 'max:100'],
         ]);
 
         try {
