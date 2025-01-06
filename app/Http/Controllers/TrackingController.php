@@ -78,9 +78,12 @@ class TrackingController extends Controller
             }
 
             // Create or update tracker data
+            // Format and clean the JSON data before storage
+            $formattedJson = json_encode($trackingInfo, JSON_UNESCAPED_SLASHES | JSON_UNESCAPED_UNICODE);
+            
             TrackerData::updateOrCreate(
                 ['trackers_id' => $tracker->id],
-                ['data' => json_encode($trackingInfo, JSON_PRETTY_PRINT | JSON_UNESCAPED_SLASHES | JSON_UNESCAPED_UNICODE)]
+                ['data' => $formattedJson]
             );
 
             return view('tracking.results', [
