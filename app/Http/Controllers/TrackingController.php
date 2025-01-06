@@ -34,6 +34,51 @@ class TrackingController extends Controller
         return view('tracking.show', compact('tracker'));
     }
 
+    public function update(Tracker $tracker)
+    {
+        try {
+            // Fetch fresh tracking details from UPS
+            $trackingInfo = $this->upsService->fetchTrackingDetails($tracker->tracking_number);
+
+            // Update tracker with latest info
+            if (isset($trackingInfo['trackResponse']['shipment'][0]['package'][0])) {
+                $package = $trackingInfo['trackResponse']['shipment'][0]['package'][0];
+                $latestActivity = $package['activity'][0] ?? null;
+
+                if ($latestActivity) {
+                    $tracker->update([
+                        'status' => $latestActivity['status']['description'] ?? null,
+                        'status_time' => isset($latestActivity['date'], $latestActivity['time'])
+                            ? date('Y-m-d H:i:s', strtotime($latestActivity['date'] . ' ' . $latestActivity['time']))
+                            : null,
+                        'location' => isset($latestActivity['location'])
+                            ? implode(', ', array_filter([
+                                $latestActivity['location']['address']['city'] ?? null,
+                                $latestActivity['location']['address']['stateProvince'] ?? null,
+                                $latestActivity['location']['address']['countryCode'] ?? null
+                            ]))
+                            : null
+                    ]);
+                }
+            }
+
+            // Update tracker data
+            TrackerData::updateOrCreate(
+                ['trackers_id' => $tracker->id],
+                ['data' => $trackingInfo]
+            );
+
+            return redirect()->route('tracking.show', $tracker)
+                ->with('flash.banner', 'Tracking information updated successfully.')
+                ->with('flash.bannerStyle', 'success');
+
+        } catch (\Exception $e) {
+            return redirect()->route('tracking.show', $tracker)
+                ->with('flash.banner', 'Unable to update tracking details. Please try again.')
+                ->with('flash.bannerStyle', 'danger');
+        }
+    }
+
     public function track(Request $request)
     {
         $request->validate([
