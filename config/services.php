@@ -42,4 +42,11 @@ return [
         'track_url' => env('UPS_TRACK_URL'),
     ],
 
+    'usps' => [
+        'client_id' => env('USPS_CLIENT_ID'),
+        'client_secret' => env('USPS_CLIENT_SECRET'),
+        'token_url' => env('USPS_TOKEN_URL'),
+        'track_url' => env('USPS_TRACK_URL'),
+    ],
+
 ];
