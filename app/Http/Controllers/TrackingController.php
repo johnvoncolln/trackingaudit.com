@@ -40,10 +40,14 @@ class TrackingController extends Controller
 
         try {
             // Create or find the tracker
-            $tracker = Tracker::firstOrCreate([
-                'tracking_number' => $request->tracking_number,
-                'carrier' => 'UPS'
-            ]);
+            $tracker = Tracker::firstOrCreate(
+                ['tracking_number' => $request->tracking_number],
+                [
+                    'carrier' => 'UPS',
+                    'reference_id' => $request->reference_id,
+                    'reference_name' => $request->reference_name
+                ]
+            );
 
             // Fetch tracking details from UPS
             $trackingInfo = $this->upsService->fetchTrackingDetails($request->tracking_number);

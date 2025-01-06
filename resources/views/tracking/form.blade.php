@@ -12,8 +12,20 @@
                 <form method="POST" action="{{ route('tracking.track') }}">
                     @csrf
                     <div class="p-6">
-                        <x-label for="tracking_number" value="{{ __('Tracking Number') }}" />
-                        <x-input id="tracking_number" name="tracking_number" class="block mt-1 w-full" type="text" required autofocus />
+                        <div class="mb-4">
+                            <x-label for="tracking_number" value="{{ __('Tracking Number') }}" />
+                            <x-input id="tracking_number" name="tracking_number" class="block mt-1 w-full" type="text" required autofocus />
+                        </div>
+                        
+                        <div class="mb-4">
+                            <x-label for="reference_id" value="{{ __('Reference ID') }}" />
+                            <x-input id="reference_id" name="reference_id" class="block mt-1 w-full" type="text" />
+                        </div>
+
+                        <div class="mb-4">
+                            <x-label for="reference_name" value="{{ __('Reference Name') }}" />
+                            <x-input id="reference_name" name="reference_name" class="block mt-1 w-full" type="text" />
+                        </div>
                     </div>
                     <div class="p-6">
                         <x-button>
