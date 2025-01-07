@@ -33,23 +33,15 @@ class TrackingRequest extends FormRequest
         ];
     }
 
-    public function after()
+    public function withValidator($validator)
     {
-        return [
-            function (Validator $validator) {
-                if ($this->carrier === Carrier::UPS->value) {
-                    $validatorTwo = Validator::make(
-                        ["tracking_number" => $this->tracking_number], // Data to validate
-                        ["tracking_number" => [new UpsTrackingNumber()]] // Validation rules
-                      );
-                    if ($validatorTwo->fails()) {
-                        $validator->errors()->add(
-                            'tracking_number',
-                            'This is not a valid UPS tracking number.'
-                        );
-                    }
-                }
+        $validator->after(function ($validator) {
+            if ($this->carrier === Carrier::UPS->value) {
+                $upsRule = new UpsTrackingNumber();
+                $upsRule->validate('tracking_number', $this->tracking_number, function($message) use ($validator) {
+                    $validator->errors()->add('tracking_number', 'This is not a valid UPS tracking number.');
+                });
             }
-        ];
+        });
     }
 }
