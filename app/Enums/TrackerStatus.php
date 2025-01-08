@@ -7,22 +7,22 @@ enum TrackerStatus: string
     /**
      * Package is awaiting pickup or processing
      */
-    case PENDING = 'PENDING';
+    case PENDING = 'pending';
 
     /**
      * Package is in transit to destination
      */
-    case IN_TRANSIT = 'IN_TRANSIT';
+    case IN_TRANSIT = 'in_transit';
 
     /**
      * Package has been delivered
      */
-    case DELIVERED = 'DELIVERED';
+    case DELIVERED = 'delivered';
 
     /**
      * Package has encountered a delivery exception
      */
-    case EXCEPTION = 'EXCEPTION';
+    case EXCEPTION = 'exception';
 
     /**
      * Get a list of all enum values
