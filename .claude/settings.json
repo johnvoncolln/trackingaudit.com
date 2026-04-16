@@ -1,0 +1,12 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(php artisan *)",
+      "Bash(./vendor/bin/pint --test)",
+      "Bash(./vendor/bin/pint app/Services/Tracking app/Services/Api app/Services/TrackingRouter.php app/Http/Controllers/TrackingController.php app/Http/Controllers/ImportTrackingController.php app/Http/Requests/TrackingRequest.php app/Jobs app/Enums/TrackerStatus.php tests/Feature/TrackingControllerTest.php tests/Feature/TrackingImportJobTest.php tests/Feature/CsvUploadTest.php tests/Unit/Services)",
+      "Bash(composer show *)",
+      "Bash(composer update *)",
+      "Bash(composer require *)"
+    ]
+  }
+}

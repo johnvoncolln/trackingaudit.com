@@ -7,8 +7,9 @@
             <div class="flex gap-4">
                 <select wire:model.live="carrier" class="rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500">
                     <option value="">All Carriers</option>
-                    <option value="UPS">UPS</option>
-                    <option value="USPS">USPS</option>
+                    @foreach($carriers as $carrier)
+                    <option value="{{ $carrier }}">{{ $carrier }}</option>
+                    @endforeach
                 </select>
                 <input wire:model.live="dateFrom" type="date" class="rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500">
                 <input wire:model.live="dateTo" type="date" class="rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500">
@@ -98,7 +99,7 @@
                                     {{ $tracker->carrier }}
                                 </td>
                                 <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
-                                    {{ $tracker->status }}
+                                    {{ \App\Enums\TrackerStatus::tryFrom($tracker->status ?? '')?->label() ?? $tracker->status }}
                                 </td>
                                 <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
                                     {{ $tracker->location }}

@@ -44,11 +44,11 @@ class UpsTrackingNumberTest extends TestCase
     public static function validTrackingNumbersProvider()
     {
         return [
-            'standard_1Z_format' => ['1Z999AA1234567890'],
+            'standard_1Z_format' => ['1Z999AA10123456784'],
             'twelve_digit_format' => ['123456789012'],
             'nine_digit_format' => ['123456789'],
             'T_plus_ten_digits' => ['T1234567890'],
-            'twenty_six_digits' => ['12345678901234567890123456']
+            'twenty_six_digits' => ['12345678901234567890123456'],
         ];
     }
 
@@ -57,11 +57,12 @@ class UpsTrackingNumberTest extends TestCase
         return [
             'empty_string' => [''],
             'too_short' => ['12345678'],
-            'too_long' => ['1Z999AA12345678901'],
-            'invalid_1Z_format' => ['1Y999AA1234567890'],
+            'too_long_1Z' => ['1Z999AA101234567845'],
+            'short_1Z' => ['1Z999AA1234567890'],
+            'invalid_1Z_format' => ['1Y999AA10123456784'],
             'invalid_T_format' => ['A1234567890'],
             'special_characters' => ['1Z999AA123456@#$'],
-            'with_spaces' => ['1Z999 AA1234567890']
+            'with_spaces' => ['1Z999 AA1234567890'],
         ];
     }
 }

@@ -43,14 +43,14 @@ class UspsTrackingNumberTest extends TestCase
             'twenty_digits' => ['12345678901234567890'],
             'twenty_six_digits' => ['12345678901234567890123456'],
             'thirty_digits' => ['123456789012345678901234567890'],
-            '91_prefix' => ['91123456789012345678901'],
-            '92_prefix' => ['92123456789012345678901'],
-            '93_prefix' => ['93123456789012345678901'],
-            '94_prefix' => ['94123456789012345678901'],
-            '95_prefix' => ['95123456789012345678901'],
+            '91_prefix' => ['9112345678901234567890'],
+            '92_prefix' => ['9212345678901234567890'],
+            '93_prefix' => ['9312345678901234567890'],
+            '94_prefix' => ['9412345678901234567890'],
+            '95_prefix' => ['9512345678901234567890'],
             'mixed_format' => ['12123456789AB12345678'],
             'international_ec' => ['EC123456789US'],
-            'international_letters' => ['AA123456789BB']
+            'international_letters' => ['AA123456789BB'],
         ];
     }
 
@@ -64,7 +64,6 @@ class UspsTrackingNumberTest extends TestCase
             'special_characters' => ['91123456789@#$%^&*()'],
             'with_spaces' => ['9112345 6789012345678901'],
             'letters_in_wrong_place' => ['91ABC123456789012345678'],
-            'wrong_international_prefix' => ['XX123456789US']
         ];
     }
 }

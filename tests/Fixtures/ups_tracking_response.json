@@ -1,0 +1,43 @@
+{
+  "trackResponse": {
+    "shipment": [
+      {
+        "package": [
+          {
+            "trackingNumber": "1Z12345E0205271688",
+            "activity": [
+              {
+                "status": {
+                  "description": "Delivered"
+                },
+                "date": "20250115",
+                "time": "143000",
+                "location": {
+                  "address": {
+                    "city": "New York",
+                    "stateProvince": "NY",
+                    "countryCode": "US"
+                  }
+                }
+              },
+              {
+                "status": {
+                  "description": "Out For Delivery"
+                },
+                "date": "20250115",
+                "time": "090000",
+                "location": {
+                  "address": {
+                    "city": "New York",
+                    "stateProvince": "NY",
+                    "countryCode": "US"
+                  }
+                }
+              }
+            ]
+          }
+        ]
+      }
+    ]
+  }
+}

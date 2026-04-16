@@ -2,6 +2,7 @@
 
 namespace App\Livewire;
 
+use App\Enums\Carrier;
 use App\Models\Tracker;
 use Livewire\Component;
 use Livewire\WithPagination;
@@ -43,6 +44,8 @@ class TrackingTable extends Component
 
     public function render()
     {
+        $carriers = Carrier::values();
+
         $trackers = Tracker::query()
             ->when($this->search, function ($query) {
                 $query->where(function ($query) {
@@ -64,7 +67,8 @@ class TrackingTable extends Component
             ->paginate(10);
 
         return view('livewire.tracking-table', [
-            'trackers' => $trackers
+            'trackers' => $trackers,
+            'carriers' => $carriers
         ]);
     }
 }

@@ -43,10 +43,17 @@ return [
     ],
 
     'usps' => [
-        'client_id' => env('USPS_CLIENT_ID'),
-        'client_secret' => env('USPS_CLIENT_SECRET'),
+        'consumer_key' => env('USPS_CONSUMER_KEY'),
+        'consumer_secret' => env('USPS_CONSUMER_SECRET'),
         'token_url' => env('USPS_TOKEN_URL'),
         'track_url' => env('USPS_TRACK_URL'),
+    ],
+
+    'fedex' => [
+        'api_key' => env('FEDEX_API_KEY'),
+        'secret_key' => env('FEDEX_SECRET_KEY'),
+        'token_url' => env('FEDEX_TOKEN_URL'),
+        'track_url' => env('FEDEX_TRACK_URL'),
     ],
 
 ];

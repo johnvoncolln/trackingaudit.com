@@ -46,8 +46,8 @@ class FedexTrackingNumberTest extends TestCase
             'twenty_digits' => ['12345678901234567890'],
             'twenty_two_digits' => ['1234567890123456789012'],
             'thirty_four_digits' => ['1234567890123456789012345678901234'],
-            '96_prefix' => ['96123456789012345678901'],
-            '7_prefix' => ['71234567890']
+            '96_prefix' => ['9612345678901234567890'],
+            '7_prefix' => ['71234567890'],
         ];
     }
 

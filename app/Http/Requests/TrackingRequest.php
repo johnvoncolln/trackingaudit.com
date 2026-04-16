@@ -3,26 +3,19 @@
 namespace App\Http\Requests;
 
 use App\Enums\Carrier;
+use App\Rules\FedexTrackingNumber;
 use App\Rules\UpsTrackingNumber;
-use Illuminate\Validation\Validator;
-use Illuminate\Validation\Rules\Enum;
+use App\Rules\UspsTrackingNumber;
 use Illuminate\Foundation\Http\FormRequest;
+use Illuminate\Validation\Rules\Enum;
 
 class TrackingRequest extends FormRequest
 {
-    /**
-     * Determine if the user is authorized to make this request.
-     */
     public function authorize(): bool
     {
         return true;
     }
 
-    /**
-     * Get the validation rules that apply to the request.
-     *
-     * @return array<string, \Illuminate\Contracts\Validation\ValidationRule|array<mixed>|string>
-     */
     public function rules(): array
     {
         return [
@@ -30,18 +23,29 @@ class TrackingRequest extends FormRequest
             'carrier' => ['required', 'string', new Enum(Carrier::class)],
             'reference_id' => ['nullable', 'string', 'max:50'],
             'reference_name' => ['nullable', 'string', 'max:100'],
+            'recipient_name' => ['nullable', 'string', 'max:200'],
+            'recipient_email' => ['nullable', 'email', 'max:200'],
         ];
     }
 
     public function withValidator($validator)
     {
         $validator->after(function ($validator) {
-            if ($this->carrier === Carrier::UPS->value) {
-                $upsRule = new UpsTrackingNumber();
-                $upsRule->validate('tracking_number', $this->tracking_number, function($message) use ($validator) {
-                    $validator->errors()->add('tracking_number', 'This is not a valid UPS tracking number.');
-                });
+            $carrier = Carrier::tryFrom($this->carrier);
+
+            if ($carrier === null) {
+                return;
             }
+
+            [$rule, $label] = match ($carrier) {
+                Carrier::UPS => [new UpsTrackingNumber, 'UPS'],
+                Carrier::USPS => [new UspsTrackingNumber, 'USPS'],
+                Carrier::FEDEX => [new FedexTrackingNumber, 'FedEx'],
+            };
+
+            $rule->validate('tracking_number', $this->tracking_number, function ($message) use ($validator, $label) {
+                $validator->errors()->add('tracking_number', "This is not a valid {$label} tracking number.");
+            });
         });
     }
 }

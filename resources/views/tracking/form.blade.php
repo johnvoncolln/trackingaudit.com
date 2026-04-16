@@ -33,7 +33,17 @@
                             <x-label for="tracking_number" value="{{ __('Tracking Number') }}" />
                             <x-input id="tracking_number" name="tracking_number" class="block mt-1 w-full" type="text" required autofocus />
                         </div>
-                        
+
+                        <div class="mb-4">
+                            <x-label for="carrier" value="{{ __('Carrier') }}" />
+                            <x-select name="carrier" required autofocus>
+                                <option value="">Select an option</option>
+                                @foreach($carriers as $carrier)
+                                <option value="{{ $carrier->value }}">{{ $carrier->name }}</option>
+                                @endforeach
+                            </x-select>
+                        </div>
+
                         <div class="mb-4">
                             <x-label for="reference_id" value="{{ __('Reference ID') }}" />
                             <x-input id="reference_id" name="reference_id" class="block mt-1 w-full" type="text" />
@@ -42,6 +52,16 @@
                         <div class="mb-4">
                             <x-label for="reference_name" value="{{ __('Reference Name') }}" />
                             <x-input id="reference_name" name="reference_name" class="block mt-1 w-full" type="text" />
+                        </div>
+
+                        <div class="mb-4">
+                            <x-label for="recipient_name" value="{{ __('Recipient Name') }}" />
+                            <x-input id="recipient_name" name="recipient_name" class="block mt-1 w-full" type="text" />
+                        </div>
+
+                        <div class="mb-4">
+                            <x-label for="recipient_email" value="{{ __('Recipient Email') }}" />
+                            <x-input id="recipient_email" name="recipient_email" class="block mt-1 w-full" type="text" />
                         </div>
                     </div>
                                 <div class="flex items-center gap-4">
@@ -81,12 +101,12 @@
 
                             <form method="POST" action="{{ route('tracking.import') }}" class="mt-6 space-y-6" enctype="multipart/form-data">
                                 @csrf
-                                
+
                                 <div>
                                     <x-label for="csv_file" value="{{ __('CSV File') }}" />
-                                    <input type="file" 
-                                           id="csv_file" 
-                                           name="csv_file" 
+                                    <input type="file"
+                                           id="csv_file"
+                                           name="csv_file"
                                            accept=".csv"
                                            class="mt-1 block w-full text-sm text-gray-900 border border-gray-300 rounded-lg cursor-pointer bg-gray-50 focus:outline-none" />
                                     <p class="mt-1 text-sm text-gray-600">

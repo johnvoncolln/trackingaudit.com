@@ -1,11 +1,11 @@
 <?php
 
-namespace App\Services;
+namespace App\Services\Api;
 
 use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\Http;
 
-class UpsService
+class UpsApiService
 {
     protected $config;
 
@@ -22,7 +22,7 @@ class UpsService
             return Cache::get($cacheKey);
         }
 
-        $credentials = base64_encode($this->config['client_id'] . ':' . $this->config['client_secret']);
+        $credentials = base64_encode($this->config['client_id'].':'.$this->config['client_secret']);
         $response = Http::withHeaders([
             'accept' => 'application/json',
             'Authorization' => "Basic {$credentials}",
@@ -39,7 +39,7 @@ class UpsService
             return $data['access_token'];
         }
 
-        throw new \Exception('Failed to fetch UPS access token: ' . $response->body());
+        throw new \Exception('Failed to fetch UPS access token: '.$response->body());
     }
 
     public function fetchTrackingDetails(string $trackingNumber)
@@ -61,6 +61,6 @@ class UpsService
             return $response->json();
         }
 
-        throw new \Exception('Failed to fetch tracking details: ' . $response->body());
+        throw new \Exception('Failed to fetch tracking details: '.$response->body());
     }
 }

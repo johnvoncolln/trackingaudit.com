@@ -48,7 +48,7 @@
                                 </div>
                                 <div class="sm:col-span-1">
                                     <dt class="text-sm font-medium text-gray-500">Current Status</dt>
-                                    <dd class="mt-1 text-sm text-gray-900">{{ $tracker->status ?? 'N/A' }}</dd>
+                                    <dd class="mt-1 text-sm text-gray-900">{{ \App\Enums\TrackerStatus::tryFrom($tracker->status ?? '')?->label() ?? $tracker->status ?? 'N/A' }}</dd>
                                 </div>
                                 <div class="sm:col-span-1">
                                     <dt class="text-sm font-medium text-gray-500">Last Updated</dt>

@@ -17,7 +17,7 @@ class UpsTrackingNumber implements ValidationRule
         // - \d{26} (26 digits)
 
         $patterns = [
-            '/^1Z[A-Z0-9]{15}$/', // 1Z + 15 alphanumeric (not 16)
+            '/^1Z[A-Z0-9]{16}$/', // 1Z + 16 alphanumeric
             '/^\d{12}$/',         // 12 digits
             '/^T\d{10}$/',        // T + 10 digits
             '/^\d{9}$/',          // 9 digits

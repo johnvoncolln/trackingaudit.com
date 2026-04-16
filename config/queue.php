@@ -30,6 +30,14 @@ return [
 
     'connections' => [
 
+        'mailcoach-redis' => [
+            'driver' => 'redis',
+            'connection' => 'default',
+            'queue' => env('MAILCOACH_QUEUE', 'default'),
+            'retry_after' => 90,
+            'block_for' => null,
+        ],
+
         'sync' => [
             'driver' => 'sync',
         ],

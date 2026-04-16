@@ -1,0 +1,40 @@
+{
+  "output": {
+    "completeTrackResults": [
+      {
+        "trackingNumber": "123456789012",
+        "trackResults": [
+          {
+            "latestStatusDetail": {
+              "code": "DL",
+              "description": "Delivered",
+              "statusByLocale": "Delivered"
+            },
+            "scanEvents": [
+              {
+                "date": "2025-01-15T14:30:00-05:00",
+                "eventType": "DL",
+                "eventDescription": "Delivered",
+                "scanLocation": {
+                  "city": "NEW YORK",
+                  "stateOrProvinceCode": "NY",
+                  "countryCode": "US"
+                }
+              },
+              {
+                "date": "2025-01-15T08:45:00-05:00",
+                "eventType": "OD",
+                "eventDescription": "On FedEx vehicle for delivery",
+                "scanLocation": {
+                  "city": "NEW YORK",
+                  "stateOrProvinceCode": "NY",
+                  "countryCode": "US"
+                }
+              }
+            ]
+          }
+        ]
+      }
+    ]
+  }
+}
