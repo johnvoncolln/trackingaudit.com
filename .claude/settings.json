@@ -14,7 +14,9 @@
       "WebFetch(domain:andrewkurochkin.com)",
       "WebFetch(domain:en.wikipedia.org)",
       "WebFetch(domain:postalboxgenie.com)",
-      "mcp__laravel-boost__get-absolute-url"
+      "mcp__laravel-boost__get-absolute-url",
+      "Bash(xxd /Users/john/code/tracking/app/Enums/Carrier.php)",
+      "Bash(git mv *)"
     ]
   }
 }
