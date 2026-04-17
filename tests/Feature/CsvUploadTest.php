@@ -105,15 +105,34 @@ class CsvUploadTest extends TestCase
         Queue::assertPushed(DelegateTrackersJob::class);
     }
 
-    public function test_csv_with_invalid_tracking_numbers_aborts_import(): void
+    public function test_csv_without_carrier_column_auto_detects(): void
     {
         $user = User::factory()->create();
 
-        $csvContent = "tracking_number,carrier,reference_id,reference_name\n";
-        $csvContent .= "INVALID123,UPS,REF001,Test Package 1\n";
-        $csvContent .= "1Z999AA10123456784,UPS,REF002,Test Package 2\n";
+        $csvContent = "tracking_number,reference_id\n";
+        $csvContent .= "1Z999AA10123456784,REF001\n";
+        $csvContent .= "123456789012,REF002\n";
 
-        $file = UploadedFile::fake()->createWithContent('invalid.csv', $csvContent);
+        $file = UploadedFile::fake()->createWithContent('no_carrier.csv', $csvContent);
+
+        $response = $this->actingAs($user)->post(route('tracking.import'), [
+            'csv_file' => $file,
+        ]);
+
+        $response->assertRedirect(route('tracking.index'));
+        $response->assertSessionHas('flash.banner', 'Successfully imported 2 tracking numbers.');
+
+        Queue::assertPushed(DelegateTrackersJob::class);
+    }
+
+    public function test_csv_with_invalid_carrier_aborts_import(): void
+    {
+        $user = User::factory()->create();
+
+        $csvContent = "tracking_number,carrier,reference_id\n";
+        $csvContent .= "1Z999AA10123456784,INVALID_CARRIER,REF001\n";
+
+        $file = UploadedFile::fake()->createWithContent('invalid_carrier.csv', $csvContent);
 
         $response = $this->actingAs($user)->post(route('tracking.import'), [
             'csv_file' => $file,
@@ -123,22 +142,6 @@ class CsvUploadTest extends TestCase
         $response->assertSessionHas('flash.bannerStyle', 'danger');
 
         Queue::assertNotPushed(DelegateTrackersJob::class);
-    }
-
-    public function test_csv_missing_carrier_column_is_rejected(): void
-    {
-        $user = User::factory()->create();
-
-        $csvContent = "tracking_number,reference_id\n";
-        $csvContent .= "1Z999AA10123456784,REF001\n";
-
-        $file = UploadedFile::fake()->createWithContent('no_carrier.csv', $csvContent);
-
-        $response = $this->actingAs($user)->post(route('tracking.import'), [
-            'csv_file' => $file,
-        ]);
-
-        $response->assertSessionHasErrors(['csv_file']);
     }
 
     public function test_csv_with_too_many_records(): void

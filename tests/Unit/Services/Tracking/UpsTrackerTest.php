@@ -32,7 +32,29 @@ class UpsTrackerTest extends TestCase
         $this->assertSame(TrackerStatus::DELIVERED->value, $tracker->status);
         $this->assertSame('New York, NY, US', $tracker->location);
         $this->assertNotNull($tracker->status_time);
+        $this->assertNotNull($tracker->delivery_date);
+        $this->assertNotNull($tracker->delivered_date);
         $this->assertDatabaseHas('tracker_data', ['trackers_id' => $tracker->id]);
+    }
+
+    public function test_track_does_not_set_delivered_date_when_not_delivered(): void
+    {
+        $fixture = json_decode(file_get_contents(base_path('tests/Fixtures/ups_tracking_response.json')), true);
+        $fixture['trackResponse']['shipment'][0]['package'][0]['activity'][0]['status']['description'] = 'In Transit';
+
+        $apiService = $this->createMock(UpsApiService::class);
+        $apiService->method('fetchTrackingDetails')->willReturn($fixture);
+
+        $user = User::factory()->create();
+
+        $tracker = (new UpsTracker($apiService))->track($user, [
+            'tracking_number' => '1Z12345E0205271688',
+            'carrier' => 'UPS',
+        ]);
+
+        $this->assertSame(TrackerStatus::IN_TRANSIT->value, $tracker->status);
+        $this->assertNotNull($tracker->delivery_date);
+        $this->assertNull($tracker->delivered_date);
     }
 
     public function test_update_refreshes_existing_tracker(): void

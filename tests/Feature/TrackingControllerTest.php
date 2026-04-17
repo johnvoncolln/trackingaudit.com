@@ -2,7 +2,6 @@
 
 namespace Tests\Feature;
 
-use App\Enums\Carrier;
 use App\Enums\TrackerStatus;
 use App\Models\User;
 use Illuminate\Foundation\Testing\RefreshDatabase;
@@ -39,7 +38,7 @@ class TrackingControllerTest extends TestCase
         ]);
     }
 
-    public function test_store_tracks_ups_package(): void
+    public function test_store_tracks_ups_package_via_auto_detection(): void
     {
         $fixture = json_decode(file_get_contents(base_path('tests/Fixtures/ups_tracking_response.json')), true);
 
@@ -52,18 +51,18 @@ class TrackingControllerTest extends TestCase
 
         $response = $this->actingAs($user)->post(route('tracking.track'), [
             'tracking_number' => '1Z12345E0205271688',
-            'carrier' => Carrier::UPS->value,
         ]);
 
         $response->assertOk();
         $this->assertDatabaseHas('trackers', [
             'user_id' => $user->id,
             'tracking_number' => '1Z12345E0205271688',
+            'carrier' => 'UPS',
             'status' => TrackerStatus::DELIVERED->value,
         ]);
     }
 
-    public function test_store_tracks_usps_package(): void
+    public function test_store_tracks_usps_package_via_auto_detection(): void
     {
         $fixture = json_decode(file_get_contents(base_path('tests/Fixtures/usps_tracking_response.json')), true);
 
@@ -76,17 +75,17 @@ class TrackingControllerTest extends TestCase
 
         $response = $this->actingAs($user)->post(route('tracking.track'), [
             'tracking_number' => '9400111899223377665544',
-            'carrier' => Carrier::USPS->value,
         ]);
 
         $response->assertOk();
         $this->assertDatabaseHas('trackers', [
             'tracking_number' => '9400111899223377665544',
+            'carrier' => 'USPS',
             'status' => TrackerStatus::DELIVERED->value,
         ]);
     }
 
-    public function test_store_tracks_fedex_package(): void
+    public function test_store_tracks_fedex_package_via_auto_detection(): void
     {
         $fixture = json_decode(file_get_contents(base_path('tests/Fixtures/fedex_tracking_response.json')), true);
 
@@ -99,36 +98,21 @@ class TrackingControllerTest extends TestCase
 
         $response = $this->actingAs($user)->post(route('tracking.track'), [
             'tracking_number' => '123456789012',
-            'carrier' => Carrier::FEDEX->value,
         ]);
 
         $response->assertOk();
         $this->assertDatabaseHas('trackers', [
             'tracking_number' => '123456789012',
+            'carrier' => 'FedEx',
             'status' => TrackerStatus::DELIVERED->value,
         ]);
     }
 
-    public function test_store_rejects_invalid_tracking_number(): void
+    public function test_store_requires_tracking_number(): void
     {
         $user = User::factory()->create();
 
-        $response = $this->actingAs($user)->post(route('tracking.track'), [
-            'tracking_number' => 'NOT-A-REAL-NUMBER',
-            'carrier' => Carrier::UPS->value,
-        ]);
-
-        $response->assertSessionHasErrors(['tracking_number']);
-    }
-
-    public function test_store_rejects_invalid_fedex_tracking_number(): void
-    {
-        $user = User::factory()->create();
-
-        $response = $this->actingAs($user)->post(route('tracking.track'), [
-            'tracking_number' => 'NOPE',
-            'carrier' => Carrier::FEDEX->value,
-        ]);
+        $response = $this->actingAs($user)->post(route('tracking.track'), []);
 
         $response->assertSessionHasErrors(['tracking_number']);
     }

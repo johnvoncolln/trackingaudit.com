@@ -4,9 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Enums\Carrier;
 use App\Jobs\DelegateTrackersJob;
-use App\Rules\FedexTrackingNumber;
-use App\Rules\UpsTrackingNumber;
-use App\Rules\UspsTrackingNumber;
+use App\Services\CarrierDetector;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Validation\Rules\Enum;
@@ -37,17 +35,16 @@ class ImportTrackingController extends Controller
                 return back()->withErrors(['csv_file' => 'CSV file must contain a tracking_number column.']);
             }
 
-            if (! in_array('carrier', $headers)) {
-                return back()->withErrors(['csv_file' => 'CSV file must contain a carrier column.']);
-            }
-
             $validRecords = 0;
             $failedRecords = 0;
+
+            // Auto-detect carrier when not provided
+            $processedRecords = [];
 
             foreach ($records as $record) {
                 $validator = Validator::make($record, [
                     'tracking_number' => ['required', 'string', 'max:50'],
-                    'carrier' => ['required', 'string', new Enum(Carrier::class)],
+                    'carrier' => ['nullable', 'string', new Enum(Carrier::class)],
                     'reference_id' => ['nullable', 'string', 'max:50'],
                     'reference_name' => ['nullable', 'string', 'max:100'],
                     'reference_data' => ['nullable', 'string'],
@@ -55,30 +52,18 @@ class ImportTrackingController extends Controller
                     'recipient_email' => ['nullable', 'email', 'max:100'],
                 ]);
 
-                $validator->after(function ($validator) use ($record) {
-                    $carrier = Carrier::tryFrom($record['carrier'] ?? '');
-
-                    if ($carrier === null) {
-                        return;
-                    }
-
-                    [$rule, $label] = match ($carrier) {
-                        Carrier::UPS => [new UpsTrackingNumber, 'UPS'],
-                        Carrier::USPS => [new UspsTrackingNumber, 'USPS'],
-                        Carrier::FEDEX => [new FedexTrackingNumber, 'FedEx'],
-                    };
-
-                    $rule->validate('tracking_number', $record['tracking_number'] ?? '', function ($message) use ($validator, $label) {
-                        $validator->errors()->add('tracking_number', "This is not a valid {$label} tracking number.");
-                    });
-                });
-
                 if ($validator->fails()) {
                     $failedRecords++;
 
                     continue;
                 }
 
+                // Auto-detect carrier if not provided or empty
+                if (empty($record['carrier'])) {
+                    $record['carrier'] = CarrierDetector::detect($record['tracking_number'])->value;
+                }
+
+                $processedRecords[] = $record;
                 $validRecords++;
             }
 
@@ -88,7 +73,7 @@ class ImportTrackingController extends Controller
                     ->with('flash.bannerStyle', 'danger');
             }
 
-            DelegateTrackersJob::dispatch($request->user(), $records);
+            DelegateTrackersJob::dispatch($request->user(), $processedRecords);
 
             return redirect()->route('tracking.index')
                 ->with('flash.banner', "Successfully imported {$validRecords} tracking numbers.")

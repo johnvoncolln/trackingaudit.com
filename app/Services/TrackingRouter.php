@@ -10,8 +10,12 @@ class TrackingRouter
 {
     public static function route(array $validated): Tracker
     {
-        $tracker = TrackerFactory::make($validated['carrier']);
+        $carrier = $validated['carrier'] ?? CarrierDetector::detect($validated['tracking_number']);
 
-        return $tracker->track(Auth::user(), $validated);
+        $tracker = TrackerFactory::make($carrier);
+
+        return $tracker->track(Auth::user(), array_merge($validated, [
+            'carrier' => $carrier instanceof \App\Enums\Carrier ? $carrier->value : $carrier,
+        ]));
     }
 }

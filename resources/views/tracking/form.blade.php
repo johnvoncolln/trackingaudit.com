@@ -35,16 +35,6 @@
                         </div>
 
                         <div class="mb-4">
-                            <x-label for="carrier" value="{{ __('Carrier') }}" />
-                            <x-select name="carrier" required autofocus>
-                                <option value="">Select an option</option>
-                                @foreach($carriers as $carrier)
-                                <option value="{{ $carrier->value }}">{{ $carrier->name }}</option>
-                                @endforeach
-                            </x-select>
-                        </div>
-
-                        <div class="mb-4">
                             <x-label for="reference_id" value="{{ __('Reference ID') }}" />
                             <x-input id="reference_id" name="reference_id" class="block mt-1 w-full" type="text" />
                         </div>
@@ -95,7 +85,8 @@
                                 </p>
                                 <p class="mt-1 text-sm text-gray-600">
                                     {{ __('Required columns: tracking_number') }}<br>
-                                    {{ __('Optional columns: reference_id, reference_name, reference_data, recipient_name, recipient_email') }}
+                                    {{ __('Optional columns: carrier, reference_id, reference_name, reference_data, recipient_name, recipient_email') }}<br>
+                                    {{ __('Carrier is auto-detected if not provided.') }}
                                 </p>
                             </header>
 

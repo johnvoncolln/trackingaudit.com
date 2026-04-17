@@ -6,7 +6,15 @@
       "Bash(./vendor/bin/pint app/Services/Tracking app/Services/Api app/Services/TrackingRouter.php app/Http/Controllers/TrackingController.php app/Http/Controllers/ImportTrackingController.php app/Http/Requests/TrackingRequest.php app/Jobs app/Enums/TrackerStatus.php tests/Feature/TrackingControllerTest.php tests/Feature/TrackingImportJobTest.php tests/Feature/CsvUploadTest.php tests/Unit/Services)",
       "Bash(composer show *)",
       "Bash(composer update *)",
-      "Bash(composer require *)"
+      "Bash(composer require *)",
+      "mcp__laravel-boost__database-schema",
+      "Bash(vendor/bin/pint --dirty)",
+      "WebSearch",
+      "WebFetch(domain:github.com)",
+      "WebFetch(domain:andrewkurochkin.com)",
+      "WebFetch(domain:en.wikipedia.org)",
+      "WebFetch(domain:postalboxgenie.com)",
+      "mcp__laravel-boost__get-absolute-url"
     ]
   }
 }

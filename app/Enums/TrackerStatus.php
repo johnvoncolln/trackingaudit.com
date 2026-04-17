@@ -20,6 +20,34 @@ enum TrackerStatus: string
         return array_column(self::cases(), 'value');
     }
 
+    /**
+     * @return array<int, self>
+     */
+    public static function terminalStatuses(): array
+    {
+        return [
+            self::DELIVERED,
+            self::RETURN_TO_SENDER,
+            self::FAILURE,
+            self::CANCELLED,
+            self::ERROR,
+        ];
+    }
+
+    /**
+     * @return array<int, self>
+     */
+    public static function activeStatuses(): array
+    {
+        return [
+            self::UNKNOWN,
+            self::PRE_TRANSIT,
+            self::IN_TRANSIT,
+            self::OUT_FOR_DELIVERY,
+            self::AVAILABLE_FOR_PICKUP,
+        ];
+    }
+
     public function label(): string
     {
         return match ($this) {

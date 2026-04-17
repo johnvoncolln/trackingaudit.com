@@ -2,7 +2,6 @@
 
 namespace App\Http\Controllers;
 
-use App\Enums\Carrier;
 use App\Http\Requests\TrackingRequest;
 use App\Models\Tracker;
 use App\Services\Tracking\TrackerFactory;
@@ -17,9 +16,7 @@ class TrackingController extends Controller
 
     public function create()
     {
-        $carriers = Carrier::cases();
-
-        return view('tracking.form', ['carriers' => $carriers]);
+        return view('tracking.form');
     }
 
     public function show(Tracker $tracker)

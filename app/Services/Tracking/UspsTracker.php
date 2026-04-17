@@ -66,11 +66,15 @@ class UspsTracker implements CarrierTracker
         }
 
         $rawStatus = $latestEvent['eventType'] ?? ($trackingInfo['statusSummary'] ?? null);
+        $status = TrackerStatus::fromUsps($rawStatus);
+        $statusTime = $this->parseEventTimestamp($latestEvent);
 
         $tracker->update([
-            'status' => TrackerStatus::fromUsps($rawStatus)->value,
-            'status_time' => $this->parseEventTimestamp($latestEvent),
+            'status' => $status->value,
+            'status_time' => $statusTime,
             'location' => $this->formatLocation($latestEvent),
+            'delivery_date' => $this->parseExpectedDelivery($trackingInfo),
+            'delivered_date' => $status === TrackerStatus::DELIVERED ? $statusTime : $tracker->delivered_date,
         ]);
     }
 
@@ -97,5 +101,18 @@ class UspsTracker implements CarrierTracker
         ]);
 
         return $parts ? implode(', ', $parts) : null;
+    }
+
+    private function parseExpectedDelivery(array $trackingInfo): ?string
+    {
+        $date = $trackingInfo['expectedDeliveryDate'] ?? null;
+
+        if (! $date) {
+            return null;
+        }
+
+        $timestamp = strtotime($date);
+
+        return $timestamp ? date('Y-m-d H:i:s', $timestamp) : null;
     }
 }

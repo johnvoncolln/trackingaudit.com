@@ -31,6 +31,29 @@ class FedexTrackerTest extends TestCase
         $this->assertSame(TrackerStatus::DELIVERED->value, $tracker->status);
         $this->assertSame('NEW YORK, NY, US', $tracker->location);
         $this->assertNotNull($tracker->status_time);
+        $this->assertNotNull($tracker->delivery_date);
+        $this->assertNotNull($tracker->delivered_date);
         $this->assertDatabaseHas('tracker_data', ['trackers_id' => $tracker->id]);
+    }
+
+    public function test_track_does_not_set_delivered_date_when_not_delivered(): void
+    {
+        $fixture = json_decode(file_get_contents(base_path('tests/Fixtures/fedex_tracking_response.json')), true);
+        $fixture['output']['completeTrackResults'][0]['trackResults'][0]['latestStatusDetail']['description'] = 'In transit';
+        $fixture['output']['completeTrackResults'][0]['trackResults'][0]['scanEvents'][0]['eventDescription'] = 'In transit';
+
+        $apiService = $this->createMock(FedexApiService::class);
+        $apiService->method('fetchTrackingDetails')->willReturn($fixture);
+
+        $user = User::factory()->create();
+
+        $tracker = (new FedexTracker($apiService))->track($user, [
+            'tracking_number' => '123456789012',
+            'carrier' => 'FedEx',
+        ]);
+
+        $this->assertSame(TrackerStatus::IN_TRANSIT->value, $tracker->status);
+        $this->assertNotNull($tracker->delivery_date);
+        $this->assertNull($tracker->delivered_date);
     }
 }

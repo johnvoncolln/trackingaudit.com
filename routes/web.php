@@ -1,8 +1,8 @@
 <?php
 
-use Illuminate\Support\Facades\Route;
-use App\Http\Controllers\TrackingController;
 use App\Http\Controllers\ImportTrackingController;
+use App\Http\Controllers\TrackingController;
+use Illuminate\Support\Facades\Route;
 
 Route::get('/', function () {
     return view('welcome');
@@ -23,4 +23,7 @@ Route::middleware([
     Route::get('/tracking/template', [ImportTrackingController::class, 'downloadTemplate'])->name('tracking.template');
     Route::get('/tracking/{tracker}', [TrackingController::class, 'show'])->name('tracking.show');
     Route::post('/tracking/{tracker}/update', [TrackingController::class, 'update'])->name('tracking.update');
+    Route::get('/settings', function () {
+        return view('settings');
+    })->name('settings');
 });

@@ -5,6 +5,11 @@
         "trackingNumber": "123456789012",
         "trackResults": [
           {
+            "estimatedDeliveryTimeWindow": {
+              "window": {
+                "ends": "2025-01-15T18:00:00-05:00"
+              }
+            },
             "latestStatusDetail": {
               "code": "DL",
               "description": "Delivered",

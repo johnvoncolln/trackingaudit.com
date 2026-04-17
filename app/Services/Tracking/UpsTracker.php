@@ -42,11 +42,14 @@ class UpsTracker implements CarrierTracker
             );
 
             if ($latestActivity) {
+                $status = TrackerStatus::fromUps($latestActivity['status']['description'] ?? null);
+                $statusTime = isset($latestActivity['date'], $latestActivity['time'])
+                    ? date('Y-m-d H:i:s', strtotime($latestActivity['date'].' '.$latestActivity['time']))
+                    : null;
+
                 $tracker->update([
-                    'status' => TrackerStatus::fromUps($latestActivity['status']['description'] ?? null)->value,
-                    'status_time' => isset($latestActivity['date'], $latestActivity['time'])
-                        ? date('Y-m-d H:i:s', strtotime($latestActivity['date'].' '.$latestActivity['time']))
-                        : null,
+                    'status' => $status->value,
+                    'status_time' => $statusTime,
                     'location' => isset($latestActivity['location'])
                         ? implode(', ', array_filter([
                             $latestActivity['location']['address']['city'] ?? null,
@@ -54,6 +57,8 @@ class UpsTracker implements CarrierTracker
                             $latestActivity['location']['address']['countryCode'] ?? null,
                         ]))
                         : null,
+                    'delivery_date' => $this->parseDeliveryDate($package),
+                    'delivered_date' => $status === TrackerStatus::DELIVERED ? $statusTime : $tracker->delivered_date,
                 ]);
             }
         } else {
@@ -78,11 +83,14 @@ class UpsTracker implements CarrierTracker
             $latestActivity = $package['activity'][0] ?? null;
 
             if ($latestActivity) {
+                $status = TrackerStatus::fromUps($latestActivity['status']['description'] ?? null);
+                $statusTime = isset($latestActivity['date'], $latestActivity['time'])
+                    ? date('Y-m-d H:i:s', strtotime($latestActivity['date'].' '.$latestActivity['time']))
+                    : null;
+
                 $tracker->update([
-                    'status' => TrackerStatus::fromUps($latestActivity['status']['description'] ?? null)->value,
-                    'status_time' => isset($latestActivity['date'], $latestActivity['time'])
-                        ? date('Y-m-d H:i:s', strtotime($latestActivity['date'].' '.$latestActivity['time']))
-                        : null,
+                    'status' => $status->value,
+                    'status_time' => $statusTime,
                     'location' => isset($latestActivity['location'])
                         ? implode(', ', array_filter([
                             $latestActivity['location']['address']['city'] ?? null,
@@ -90,6 +98,8 @@ class UpsTracker implements CarrierTracker
                             $latestActivity['location']['address']['countryCode'] ?? null,
                         ]))
                         : null,
+                    'delivery_date' => $this->parseDeliveryDate($package),
+                    'delivered_date' => $status === TrackerStatus::DELIVERED ? $statusTime : $tracker->delivered_date,
                 ]);
             }
         }
@@ -101,5 +111,18 @@ class UpsTracker implements CarrierTracker
         );
 
         return $tracker->refresh();
+    }
+
+    private function parseDeliveryDate(array $package): ?string
+    {
+        $date = $package['deliveryDate']['date'] ?? null;
+
+        if (! $date) {
+            return null;
+        }
+
+        $timestamp = strtotime($date);
+
+        return $timestamp ? date('Y-m-d H:i:s', $timestamp) : null;
     }
 }

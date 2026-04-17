@@ -36,6 +36,11 @@ class UserFactory extends Factory
             'remember_token' => Str::random(10),
             'profile_photo_path' => null,
             'current_team_id' => null,
+            'late_shipment_notifications_enabled' => false,
+            'late_shipment_notifications_frequency' => 'daily',
+            'late_shipment_report_enabled' => false,
+            'late_shipment_report_frequency' => 'daily',
+            'api_token' => null,
         ];
     }
 

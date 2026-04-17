@@ -68,10 +68,15 @@ class FedexTracker implements CarrierTracker
             ?? $latestStatus['statusByLocale']
             ?? ($latestScan['eventDescription'] ?? null);
 
+        $status = TrackerStatus::fromFedex($rawStatus);
+        $statusTime = $this->parseScanTimestamp($latestScan);
+
         $tracker->update([
-            'status' => TrackerStatus::fromFedex($rawStatus)->value,
-            'status_time' => $this->parseScanTimestamp($latestScan),
+            'status' => $status->value,
+            'status_time' => $statusTime,
             'location' => $this->formatLocation($latestScan),
+            'delivery_date' => $this->parseEstimatedDelivery($trackResult),
+            'delivered_date' => $status === TrackerStatus::DELIVERED ? $statusTime : $tracker->delivered_date,
         ]);
     }
 
@@ -101,5 +106,18 @@ class FedexTracker implements CarrierTracker
         ]);
 
         return $parts ? implode(', ', $parts) : null;
+    }
+
+    private function parseEstimatedDelivery(array $trackResult): ?string
+    {
+        $date = $trackResult['estimatedDeliveryTimeWindow']['window']['ends'] ?? null;
+
+        if (! $date) {
+            return null;
+        }
+
+        $timestamp = strtotime($date);
+
+        return $timestamp ? date('Y-m-d H:i:s', $timestamp) : null;
     }
 }
