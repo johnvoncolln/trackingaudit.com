@@ -49,7 +49,7 @@ class Dashboard extends Component
                 $attentionStatusValues
             )
             ->selectRaw(
-                'COUNT(CASE WHEN status = ? AND delivered_date IS NOT NULL AND delivery_date IS NOT NULL AND delivered_date <= delivery_date THEN 1 END) as on_time_count',
+                'COUNT(CASE WHEN status = ? AND delivered_date IS NOT NULL AND delivery_date IS NOT NULL AND DATE(delivered_date) <= DATE(delivery_date) THEN 1 END) as on_time_count',
                 [TrackerStatus::DELIVERED->value]
             )
             ->selectRaw(
@@ -67,8 +67,9 @@ class Dashboard extends Component
             ->where('created_at', '>=', $startDate)
             ->where('status', TrackerStatus::DELIVERED->value)
             ->whereNotNull('delivered_date')
+            ->whereColumn('delivered_date', '>=', 'created_at')
             ->get(['created_at', 'delivered_date'])
-            ->avg(fn (Tracker $t) => $t->created_at->diffInSeconds($t->delivered_date) / 86400);
+            ->avg(fn (Tracker $t) => abs($t->created_at->diffInSeconds($t->delivered_date)) / 86400);
 
         if ($avgDeliveryDays !== null) {
             $avgDeliveryDays = round($avgDeliveryDays, 1);

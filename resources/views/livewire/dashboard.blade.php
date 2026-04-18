@@ -1,48 +1,48 @@
 <div>
     {{-- Row 1: Summary Stat Cards --}}
     <div class="grid grid-cols-1 gap-5 sm:grid-cols-2 lg:grid-cols-4">
-        <div class="bg-white overflow-hidden shadow-xl sm:rounded-lg">
+        <a href="{{ route('tracking.index') }}" class="block bg-white overflow-hidden shadow-xl sm:rounded-lg hover:shadow-2xl transition-shadow duration-200">
             <div class="p-6">
                 <div class="text-sm font-medium text-gray-500">Total Shipments</div>
                 <div class="mt-1 text-3xl font-semibold text-gray-900">{{ number_format($totalShipments) }}</div>
                 <div class="mt-1 text-xs text-gray-400">Past {{ $this->days }} days</div>
             </div>
-        </div>
+        </a>
 
-        <div class="bg-white overflow-hidden shadow-xl sm:rounded-lg">
+        <a href="{{ route('tracking.index', ['filter' => 'delivered']) }}" class="block bg-white overflow-hidden shadow-xl sm:rounded-lg hover:shadow-2xl transition-shadow duration-200">
             <div class="p-6">
                 <div class="text-sm font-medium text-gray-500">Delivered</div>
                 <div class="mt-1 text-3xl font-semibold text-green-600">{{ number_format($deliveredCount) }}</div>
                 <div class="mt-1 text-xs text-gray-400">Past {{ $this->days }} days</div>
             </div>
-        </div>
+        </a>
 
-        <div class="bg-white overflow-hidden shadow-xl sm:rounded-lg">
+        <a href="{{ route('tracking.index', ['filter' => 'en_route']) }}" class="block bg-white overflow-hidden shadow-xl sm:rounded-lg hover:shadow-2xl transition-shadow duration-200">
             <div class="p-6">
                 <div class="text-sm font-medium text-gray-500">En Route</div>
                 <div class="mt-1 text-3xl font-semibold text-indigo-600">{{ number_format($enRouteCount) }}</div>
                 <div class="mt-1 text-xs text-gray-400">Past {{ $this->days }} days</div>
             </div>
-        </div>
+        </a>
 
-        <div class="bg-white overflow-hidden shadow-xl sm:rounded-lg">
+        <a href="{{ route('tracking.index', ['filter' => 'late']) }}" class="block bg-white overflow-hidden shadow-xl sm:rounded-lg hover:shadow-2xl transition-shadow duration-200">
             <div class="p-6">
                 <div class="text-sm font-medium text-gray-500">Late</div>
                 <div class="mt-1 text-3xl font-semibold {{ $lateCount > 0 ? 'text-red-600' : 'text-gray-900' }}">{{ number_format($lateCount) }}</div>
                 <div class="mt-1 text-xs text-gray-400">Past expected delivery</div>
             </div>
-        </div>
+        </a>
     </div>
 
     {{-- Row 2: Additional Metrics --}}
     <div class="mt-8 grid grid-cols-1 gap-5 sm:grid-cols-3">
-        <div class="bg-white overflow-hidden shadow-xl sm:rounded-lg">
+        <a href="{{ route('tracking.index', ['filter' => 'needs_attention']) }}" class="block bg-white overflow-hidden shadow-xl sm:rounded-lg hover:shadow-2xl transition-shadow duration-200">
             <div class="p-6">
                 <div class="text-sm font-medium text-gray-500">Needs Attention</div>
                 <div class="mt-1 text-3xl font-semibold {{ $needsAttentionCount > 0 ? 'text-amber-600' : 'text-gray-900' }}">{{ number_format($needsAttentionCount) }}</div>
                 <div class="mt-1 text-xs text-gray-400">Failures, returns, errors</div>
             </div>
-        </div>
+        </a>
 
         <div class="bg-white overflow-hidden shadow-xl sm:rounded-lg">
             <div class="p-6">

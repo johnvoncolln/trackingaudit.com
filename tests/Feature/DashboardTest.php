@@ -127,6 +127,23 @@ class DashboardTest extends TestCase
             ->assertViewHas('onTimeRate', 66.7);
     }
 
+    public function test_on_time_rate_compares_dates_not_datetimes(): void
+    {
+        $user = User::factory()->create();
+
+        // Delivered same day but later in the day (14:30 vs 00:00)
+        Tracker::factory()->create([
+            'user_id' => $user->id,
+            'status' => TrackerStatus::DELIVERED->value,
+            'delivery_date' => '2026-04-10 00:00:00',
+            'delivered_date' => '2026-04-10 14:30:00',
+        ]);
+
+        Livewire::actingAs($user)
+            ->test(Dashboard::class)
+            ->assertViewHas('onTimeRate', 100.0);
+    }
+
     public function test_dashboard_on_time_rate_is_null_when_no_eligible_shipments(): void
     {
         $user = User::factory()->create();
@@ -165,6 +182,31 @@ class DashboardTest extends TestCase
         Livewire::actingAs($user)
             ->test(Dashboard::class)
             ->assertViewHas('avgDeliveryDays', 3.0);
+    }
+
+    public function test_avg_delivery_days_excludes_retroactive_imports(): void
+    {
+        $user = User::factory()->create();
+
+        // Normal flow: created 4 days ago, delivered 2 days ago = 2 days
+        Tracker::factory()->create([
+            'user_id' => $user->id,
+            'status' => TrackerStatus::DELIVERED->value,
+            'created_at' => now()->subDays(4),
+            'delivered_date' => now()->subDays(2),
+        ]);
+
+        // Retroactive import: created today, but delivered 3 days ago
+        Tracker::factory()->create([
+            'user_id' => $user->id,
+            'status' => TrackerStatus::DELIVERED->value,
+            'created_at' => now(),
+            'delivered_date' => now()->subDays(3),
+        ]);
+
+        Livewire::actingAs($user)
+            ->test(Dashboard::class)
+            ->assertViewHas('avgDeliveryDays', 2.0);
     }
 
     public function test_dashboard_avg_delivery_days_is_null_when_no_deliveries(): void

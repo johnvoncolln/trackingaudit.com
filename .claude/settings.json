@@ -19,7 +19,9 @@
       "Bash(git mv *)",
       "mcp__laravel-boost__search-docs",
       "mcp__laravel-boost__database-query",
-      "Bash(vendor/bin/pint app/Console/Commands/BackfillDeliveryDates.php)"
+      "Bash(vendor/bin/pint app/Console/Commands/BackfillDeliveryDates.php)",
+      "Bash(php -r \"var_dump\\(strtotime\\('20241018'\\)\\);\")",
+      "Bash(php -r ' *)"
     ]
   }
 }

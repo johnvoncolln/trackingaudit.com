@@ -5,6 +5,13 @@
                 <input wire:model.live.debounce.300ms="search" type="search" placeholder="Search tracking number, reference..." class="w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500">
             </div>
             <div class="flex gap-4">
+                <select wire:model.live="filter" class="rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500">
+                    <option value="">All Statuses</option>
+                    <option value="delivered">Delivered</option>
+                    <option value="en_route">En Route</option>
+                    <option value="late">Late</option>
+                    <option value="needs_attention">Needs Attention</option>
+                </select>
                 <select wire:model.live="carrier" class="rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500">
                     <option value="">All Carriers</option>
                     @foreach($carriers as $carrier)
@@ -112,7 +119,16 @@
                     </tbody>
                 </table>
             </div>
-            <div class="mt-4">
+            <div class="mt-4 flex items-center justify-between">
+                <div class="flex items-center gap-2">
+                    <label for="perPage" class="text-sm text-gray-700">Per page:</label>
+                    <select wire:model.live="perPage" id="perPage" class="rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 text-sm">
+                        <option value="25">25</option>
+                        <option value="50">50</option>
+                        <option value="100">100</option>
+                        <option value="250">250</option>
+                    </select>
+                </div>
                 {{ $trackers->links() }}
             </div>
         @endif
