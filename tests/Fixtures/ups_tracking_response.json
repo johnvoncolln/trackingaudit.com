@@ -5,9 +5,12 @@
         "package": [
           {
             "trackingNumber": "1Z12345E0205271688",
-            "deliveryDate": {
-              "date": "20250115"
-            },
+            "deliveryDate": [
+              {
+                "type": "DEL",
+                "date": "20250115"
+              }
+            ],
             "activity": [
               {
                 "status": {

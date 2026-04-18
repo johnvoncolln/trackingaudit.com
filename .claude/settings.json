@@ -17,7 +17,8 @@
       "mcp__laravel-boost__get-absolute-url",
       "Bash(xxd /Users/john/code/tracking/app/Enums/Carrier.php)",
       "Bash(git mv *)",
-      "mcp__laravel-boost__search-docs"
+      "mcp__laravel-boost__search-docs",
+      "mcp__laravel-boost__database-query"
     ]
   }
 }

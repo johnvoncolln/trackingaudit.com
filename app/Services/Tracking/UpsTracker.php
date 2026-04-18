@@ -115,7 +115,7 @@ class UpsTracker implements CarrierTracker
 
     private function parseDeliveryDate(array $package): ?string
     {
-        $date = $package['deliveryDate']['date'] ?? null;
+        $date = $package['deliveryDate'][0]['date'] ?? null;
 
         if (! $date) {
             return null;
