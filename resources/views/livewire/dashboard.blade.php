@@ -29,7 +29,7 @@
             <div class="p-6">
                 <div class="text-sm font-medium text-gray-500">Late</div>
                 <div class="mt-1 text-3xl font-semibold {{ $lateCount > 0 ? 'text-red-600' : 'text-gray-900' }}">{{ number_format($lateCount) }}</div>
-                <div class="mt-1 text-xs text-gray-400">Past expected delivery</div>
+                <div class="mt-1 text-xs text-gray-400">Delivered after expected date</div>
             </div>
         </a>
     </div>

@@ -75,9 +75,16 @@ class DashboardTest extends TestCase
     {
         $user = User::factory()->create();
 
-        Tracker::factory()->count(2)->late()->create(['user_id' => $user->id]);
+        // 2 delivered late (delivered_date after delivery_date)
+        Tracker::factory()->count(2)->deliveredLate()->create(['user_id' => $user->id]);
+        // Should not count: still in transit, on-time delivery, active
         Tracker::factory()->active()->create(['user_id' => $user->id]);
-        Tracker::factory()->delivered()->create(['user_id' => $user->id]);
+        Tracker::factory()->create([
+            'user_id' => $user->id,
+            'status' => TrackerStatus::DELIVERED->value,
+            'delivery_date' => now()->subDay(),
+            'delivered_date' => now()->subDays(2),
+        ]);
 
         Livewire::actingAs($user)
             ->test(Dashboard::class)

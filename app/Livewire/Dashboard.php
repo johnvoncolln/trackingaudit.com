@@ -41,8 +41,8 @@ class Dashboard extends Component
                 $activeStatusValues
             )
             ->selectRaw(
-                'COUNT(CASE WHEN delivery_date < ? AND delivered_date IS NULL AND status IN ('.$this->placeholders($activeStatusValues).') THEN 1 END) as late_count',
-                [now(), ...$activeStatusValues]
+                'COUNT(CASE WHEN status = ? AND delivered_date IS NOT NULL AND delivery_date IS NOT NULL AND DATE(delivered_date) > DATE(delivery_date) THEN 1 END) as late_count',
+                [TrackerStatus::DELIVERED->value]
             )
             ->selectRaw(
                 'COUNT(CASE WHEN status IN ('.$this->placeholders($attentionStatusValues).') THEN 1 END) as needs_attention_count',

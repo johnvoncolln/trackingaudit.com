@@ -95,9 +95,10 @@ class TrackingTable extends Component
                 match ($this->filter) {
                     'delivered' => $query->where('status', TrackerStatus::DELIVERED->value),
                     'en_route' => $query->whereIn('status', $activeStatuses),
-                    'late' => $query->where('delivery_date', '<', now())
-                        ->whereNull('delivered_date')
-                        ->whereIn('status', $activeStatuses),
+                    'late' => $query->where('status', TrackerStatus::DELIVERED->value)
+                        ->whereNotNull('delivered_date')
+                        ->whereNotNull('delivery_date')
+                        ->whereRaw('DATE(delivered_date) > DATE(delivery_date)'),
                     'needs_attention' => $query->whereIn('status', [
                         TrackerStatus::FAILURE->value,
                         TrackerStatus::RETURN_TO_SENDER->value,
