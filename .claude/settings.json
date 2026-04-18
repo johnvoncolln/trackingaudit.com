@@ -18,7 +18,8 @@
       "Bash(xxd /Users/john/code/tracking/app/Enums/Carrier.php)",
       "Bash(git mv *)",
       "mcp__laravel-boost__search-docs",
-      "mcp__laravel-boost__database-query"
+      "mcp__laravel-boost__database-query",
+      "Bash(vendor/bin/pint app/Console/Commands/BackfillDeliveryDates.php)"
     ]
   }
 }
