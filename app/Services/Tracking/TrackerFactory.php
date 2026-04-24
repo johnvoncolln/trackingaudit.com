@@ -12,6 +12,10 @@ class TrackerFactory
 {
     public static function make(string|Carrier $carrier): CarrierTracker
     {
+        if (config('tracking.driver') === 'easypost') {
+            return app(EasyPostTracker::class);
+        }
+
         $carrier = $carrier instanceof Carrier
             ? $carrier
             : (Carrier::tryFrom($carrier) ?? throw new InvalidArgumentException("Unknown carrier: {$carrier}"));

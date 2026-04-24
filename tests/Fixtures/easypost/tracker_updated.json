@@ -1,0 +1,91 @@
+{
+    "id": "evt_abc123",
+    "object": "Event",
+    "mode": "test",
+    "description": "tracker.updated",
+    "previous_attributes": {
+        "status": "in_transit"
+    },
+    "pending_urls": [],
+    "completed_urls": [],
+    "result": {
+        "id": "trk_9f1c5e",
+        "object": "Tracker",
+        "mode": "test",
+        "tracking_code": "EZ1000000001",
+        "status": "delivered",
+        "status_detail": "arrived_at_destination",
+        "signed_by": "J DOE",
+        "weight": null,
+        "est_delivery_date": "2026-04-25T00:00:00Z",
+        "shipment_id": null,
+        "carrier": "USPS",
+        "tracking_details": [
+            {
+                "object": "TrackingDetail",
+                "message": "Shipping label created",
+                "description": null,
+                "status": "pre_transit",
+                "status_detail": "status_update",
+                "datetime": "2026-04-22T12:00:00Z",
+                "source": "USPS",
+                "carrier_code": null,
+                "tracking_location": {
+                    "object": "TrackingLocation",
+                    "city": "New York",
+                    "state": "NY",
+                    "country": "US",
+                    "zip": "10001"
+                }
+            },
+            {
+                "object": "TrackingDetail",
+                "message": "Departed USPS Regional Facility",
+                "description": null,
+                "status": "in_transit",
+                "status_detail": "departed_facility",
+                "datetime": "2026-04-23T08:30:00Z",
+                "source": "USPS",
+                "carrier_code": null,
+                "tracking_location": {
+                    "object": "TrackingLocation",
+                    "city": "Philadelphia",
+                    "state": "PA",
+                    "country": "US",
+                    "zip": "19101"
+                }
+            },
+            {
+                "object": "TrackingDetail",
+                "message": "Delivered, Front Door/Porch",
+                "description": null,
+                "status": "delivered",
+                "status_detail": "arrived_at_destination",
+                "datetime": "2026-04-24T14:15:00Z",
+                "source": "USPS",
+                "carrier_code": null,
+                "tracking_location": {
+                    "object": "TrackingLocation",
+                    "city": "Washington",
+                    "state": "DC",
+                    "country": "US",
+                    "zip": "20001"
+                }
+            }
+        ],
+        "carrier_detail": {
+            "object": "CarrierDetail",
+            "service": "First-Class Package Service",
+            "container_type": null,
+            "est_delivery_date_local": null,
+            "est_delivery_time_local": null,
+            "origin_location": "NEW YORK NY 10001",
+            "destination_location": "WASHINGTON DC 20001",
+            "guaranteed_delivery_date": null,
+            "alternate_identifier": null,
+            "initial_delivery_attempt": "2026-04-24T14:15:00Z"
+        },
+        "public_url": "https://track.easypost.com/djE6dHJrXzlmMWM1ZQ",
+        "fees": []
+    }
+}

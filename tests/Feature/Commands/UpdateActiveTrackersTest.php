@@ -74,4 +74,20 @@ class UpdateActiveTrackersTest extends TestCase
 
         Queue::assertNothingPushed();
     }
+
+    public function test_is_noop_under_easypost_driver(): void
+    {
+        config(['tracking.driver' => 'easypost']);
+
+        Queue::fake();
+
+        $user = User::factory()->create();
+        Tracker::factory()->for($user)->active()->count(3)->create();
+
+        $this->artisan('tracking:update-active')
+            ->expectsOutputToContain('Skipping: EasyPost webhooks handle tracker updates.')
+            ->assertSuccessful();
+
+        Queue::assertNothingPushed();
+    }
 }

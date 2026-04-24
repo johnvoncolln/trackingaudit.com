@@ -116,6 +116,22 @@ enum TrackerStatus: string
         };
     }
 
+    public static function fromEasyPost(?string $raw): self
+    {
+        return match (strtolower(trim((string) $raw))) {
+            'pre_transit' => self::PRE_TRANSIT,
+            'in_transit' => self::IN_TRANSIT,
+            'out_for_delivery' => self::OUT_FOR_DELIVERY,
+            'delivered' => self::DELIVERED,
+            'available_for_pickup' => self::AVAILABLE_FOR_PICKUP,
+            'return_to_sender' => self::RETURN_TO_SENDER,
+            'failure' => self::FAILURE,
+            'cancelled' => self::CANCELLED,
+            'error' => self::ERROR,
+            default => self::UNKNOWN,
+        };
+    }
+
     public static function fromFedex(?string $raw): self
     {
         $normalized = strtolower(trim((string) $raw));

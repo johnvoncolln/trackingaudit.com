@@ -7,18 +7,18 @@ use App\Jobs\UpdateTrackerJob;
 use App\Models\Tracker;
 use Illuminate\Console\Command;
 
-class UpdateActiveTrackers extends Command
+class BackfillEasyPostTrackers extends Command
 {
-    protected $signature = 'tracking:update-active';
+    protected $signature = 'tracking:backfill-easypost';
 
-    protected $description = 'Dispatch update jobs for all trackers with active (non-terminal) statuses';
+    protected $description = 'Dispatch update jobs for active trackers missing an easypost_id so they register with EasyPost';
 
     public function handle(): int
     {
-        if (config('tracking.driver') === 'easypost') {
-            $this->info('Skipping: EasyPost webhooks handle tracker updates.');
+        if (config('tracking.driver') !== 'easypost') {
+            $this->warn('tracking.driver is not "easypost" — aborting.');
 
-            return self::SUCCESS;
+            return self::FAILURE;
         }
 
         $activeStatuses = array_map(
@@ -28,7 +28,9 @@ class UpdateActiveTrackers extends Command
 
         $count = 0;
 
-        Tracker::whereIn('status', $activeStatuses)
+        Tracker::query()
+            ->whereIn('status', $activeStatuses)
+            ->whereNull('easypost_id')
             ->chunkById(100, function ($trackers) use (&$count) {
                 foreach ($trackers as $tracker) {
                     UpdateTrackerJob::dispatch($tracker);
@@ -36,7 +38,7 @@ class UpdateActiveTrackers extends Command
                 }
             });
 
-        $this->info("Dispatched {$count} tracker update jobs.");
+        $this->info("Dispatched {$count} EasyPost backfill jobs.");
 
         return self::SUCCESS;
     }
