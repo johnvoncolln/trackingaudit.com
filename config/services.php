@@ -40,6 +40,7 @@ return [
         'client_secret' => env('UPS_CLIENT_SECRET'),
         'token_url' => env('UPS_TOKEN_URL'),
         'track_url' => env('UPS_TRACK_URL'),
+        'transit_url' => env('UPS_TRANSIT_URL'),
     ],
 
     'usps' => [

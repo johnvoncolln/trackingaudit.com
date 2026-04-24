@@ -149,7 +149,7 @@ class CsvUploadTest extends TestCase
         $user = User::factory()->create();
 
         $csvContent = "tracking_number,carrier,reference_id,reference_name\n";
-        for ($i = 0; $i < 501; $i++) {
+        for ($i = 0; $i < 1501; $i++) {
             $csvContent .= "1Z999AA1012345678{$i},UPS,REF{$i},Test Package {$i}\n";
         }
 
@@ -159,6 +159,6 @@ class CsvUploadTest extends TestCase
             'csv_file' => $file,
         ]);
 
-        $response->assertSessionHasErrors(['csv_file' => 'CSV file contains more than 500 records.']);
+        $response->assertSessionHasErrors(['csv_file' => 'CSV file contains more than 1500 records.']);
     }
 }

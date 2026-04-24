@@ -54,6 +54,7 @@ class TrackerFactory extends Factory
         return $this->state(fn (array $attributes) => [
             'status' => TrackerStatus::DELIVERED->value,
             'delivery_date' => now()->subDays(2),
+            'expected_delivery_date' => now()->subDays(2),
             'delivered_date' => now()->subDay(),
         ]);
     }
@@ -63,6 +64,7 @@ class TrackerFactory extends Factory
         return $this->state(fn (array $attributes) => [
             'status' => TrackerStatus::IN_TRANSIT->value,
             'delivery_date' => now()->subDays(2),
+            'expected_delivery_date' => now()->subDays(2),
             'delivered_date' => null,
         ]);
     }
@@ -83,6 +85,7 @@ class TrackerFactory extends Factory
         return $this->state(fn (array $attributes) => [
             'status' => TrackerStatus::DELIVERED->value,
             'delivery_date' => now()->subDays(3),
+            'expected_delivery_date' => now()->subDays(3),
             'delivered_date' => now()->subDay(),
         ]);
     }

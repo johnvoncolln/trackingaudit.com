@@ -75,15 +75,24 @@ class DashboardTest extends TestCase
     {
         $user = User::factory()->create();
 
-        // 2 delivered late (delivered_date after delivery_date)
+        // 2 delivered late (delivered_date after expected_delivery_date)
         Tracker::factory()->count(2)->deliveredLate()->create(['user_id' => $user->id]);
         // Should not count: still in transit, on-time delivery, active
         Tracker::factory()->active()->create(['user_id' => $user->id]);
         Tracker::factory()->create([
             'user_id' => $user->id,
             'status' => TrackerStatus::DELIVERED->value,
-            'delivery_date' => now()->subDay(),
+            'expected_delivery_date' => now()->subDay(),
             'delivered_date' => now()->subDays(2),
+        ]);
+        // USPS with late dates — must NOT be flagged late (no expected_delivery_date).
+        Tracker::factory()->create([
+            'user_id' => $user->id,
+            'carrier' => Carrier::USPS->value,
+            'status' => TrackerStatus::DELIVERED->value,
+            'delivery_date' => now()->subDays(3),
+            'delivered_date' => now()->subDay(),
+            'expected_delivery_date' => null,
         ]);
 
         Livewire::actingAs($user)
@@ -118,15 +127,15 @@ class DashboardTest extends TestCase
     {
         $user = User::factory()->create();
 
-        // 2 on-time deliveries (delivered_date <= delivery_date)
+        // 2 on-time deliveries (delivered_date <= expected_delivery_date)
         Tracker::factory()->count(2)->create([
             'user_id' => $user->id,
             'status' => TrackerStatus::DELIVERED->value,
-            'delivery_date' => now()->subDay(),
+            'expected_delivery_date' => now()->subDay(),
             'delivered_date' => now()->subDays(2),
         ]);
 
-        // 1 late delivery (delivered_date > delivery_date)
+        // 1 late delivery (delivered_date > expected_delivery_date)
         Tracker::factory()->deliveredLate()->create(['user_id' => $user->id]);
 
         Livewire::actingAs($user)
@@ -142,7 +151,7 @@ class DashboardTest extends TestCase
         Tracker::factory()->create([
             'user_id' => $user->id,
             'status' => TrackerStatus::DELIVERED->value,
-            'delivery_date' => '2026-04-10 00:00:00',
+            'expected_delivery_date' => '2026-04-10',
             'delivered_date' => '2026-04-10 14:30:00',
         ]);
 

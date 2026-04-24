@@ -97,8 +97,8 @@ class TrackingTable extends Component
                     'en_route' => $query->whereIn('status', $activeStatuses),
                     'late' => $query->where('status', TrackerStatus::DELIVERED->value)
                         ->whereNotNull('delivered_date')
-                        ->whereNotNull('delivery_date')
-                        ->whereRaw('DATE(delivered_date) > DATE(delivery_date)'),
+                        ->whereNotNull('expected_delivery_date')
+                        ->whereRaw('DATE(delivered_date) > DATE(expected_delivery_date)'),
                     'needs_attention' => $query->whereIn('status', [
                         TrackerStatus::FAILURE->value,
                         TrackerStatus::RETURN_TO_SENDER->value,

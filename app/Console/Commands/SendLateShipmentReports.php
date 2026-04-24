@@ -34,9 +34,9 @@ class SendLateShipmentReports extends Command
         foreach ($users as $user) {
             $lateDeliveries = Tracker::where('user_id', $user->id)
                 ->whereIn('carrier', [Carrier::UPS->value, Carrier::FEDEX->value])
-                ->whereNotNull('delivery_date')
+                ->whereNotNull('expected_delivery_date')
                 ->whereNotNull('delivered_date')
-                ->whereColumn('delivered_date', '>', 'delivery_date')
+                ->whereColumn('delivered_date', '>', 'expected_delivery_date')
                 ->whereBetween('delivered_date', $dateRange)
                 ->get();
 

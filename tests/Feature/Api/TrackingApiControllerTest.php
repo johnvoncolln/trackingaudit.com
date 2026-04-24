@@ -99,11 +99,11 @@ class TrackingApiControllerTest extends TestCase
             ->assertJsonValidationErrors(['tracking_numbers.0.tracking_number']);
     }
 
-    public function test_validates_max_500_tracking_numbers(): void
+    public function test_validates_max_1500_tracking_numbers(): void
     {
         $user = User::factory()->create(['api_token' => Str::uuid()->toString()]);
 
-        $numbers = array_fill(0, 501, ['tracking_number' => '1Z12345E0205271688']);
+        $numbers = array_fill(0, 1501, ['tracking_number' => '1Z12345E0205271688']);
 
         $response = $this->postJson("/api/v1/tracking/{$user->api_token}", [
             'tracking_numbers' => $numbers,

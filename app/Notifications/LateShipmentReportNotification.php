@@ -38,9 +38,9 @@ class LateShipmentReportNotification extends Notification implements ShouldQueue
         $hasUps = false;
 
         foreach ($this->lateDeliveries as $tracker) {
-            $expected = $tracker->delivery_date->format('M j, Y');
+            $expected = $tracker->expected_delivery_date->format('M j, Y');
             $actual = $tracker->delivered_date->format('M j, Y');
-            $daysLate = $tracker->delivery_date->diffInDays($tracker->delivered_date);
+            $daysLate = $tracker->expected_delivery_date->diffInDays($tracker->delivered_date);
 
             $message->line("- **{$tracker->tracking_number}** ({$tracker->carrier}) — Expected: {$expected}, Delivered: {$actual} ({$daysLate} ".($daysLate === 1 ? 'day' : 'days').' late)');
 

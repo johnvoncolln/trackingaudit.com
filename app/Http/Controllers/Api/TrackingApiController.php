@@ -20,7 +20,7 @@ class TrackingApiController extends Controller
         }
 
         $validated = $request->validate([
-            'tracking_numbers' => ['required', 'array', 'max:500'],
+            'tracking_numbers' => ['required', 'array', 'max:1500'],
             'tracking_numbers.*.tracking_number' => ['required', 'string', 'max:50'],
             'tracking_numbers.*.reference_id' => ['nullable', 'string', 'max:50'],
             'tracking_numbers.*.reference_name' => ['nullable', 'string', 'max:100'],

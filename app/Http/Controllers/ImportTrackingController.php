@@ -25,8 +25,8 @@ class ImportTrackingController extends Controller
 
             $records = iterator_to_array($csv->getRecords());
 
-            if (count($records) > 500) {
-                return back()->withErrors(['csv_file' => 'CSV file contains more than 500 records.']);
+            if (count($records) > 1500) {
+                return back()->withErrors(['csv_file' => 'CSV file contains more than 1500 records.']);
             }
 
             // Validate required columns

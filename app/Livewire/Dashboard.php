@@ -41,7 +41,7 @@ class Dashboard extends Component
                 $activeStatusValues
             )
             ->selectRaw(
-                'COUNT(CASE WHEN status = ? AND delivered_date IS NOT NULL AND delivery_date IS NOT NULL AND DATE(delivered_date) > DATE(delivery_date) THEN 1 END) as late_count',
+                'COUNT(CASE WHEN status = ? AND delivered_date IS NOT NULL AND expected_delivery_date IS NOT NULL AND DATE(delivered_date) > DATE(expected_delivery_date) THEN 1 END) as late_count',
                 [TrackerStatus::DELIVERED->value]
             )
             ->selectRaw(
@@ -49,11 +49,11 @@ class Dashboard extends Component
                 $attentionStatusValues
             )
             ->selectRaw(
-                'COUNT(CASE WHEN status = ? AND delivered_date IS NOT NULL AND delivery_date IS NOT NULL AND DATE(delivered_date) <= DATE(delivery_date) THEN 1 END) as on_time_count',
+                'COUNT(CASE WHEN status = ? AND delivered_date IS NOT NULL AND expected_delivery_date IS NOT NULL AND DATE(delivered_date) <= DATE(expected_delivery_date) THEN 1 END) as on_time_count',
                 [TrackerStatus::DELIVERED->value]
             )
             ->selectRaw(
-                'COUNT(CASE WHEN status = ? AND delivered_date IS NOT NULL AND delivery_date IS NOT NULL THEN 1 END) as on_time_eligible_count',
+                'COUNT(CASE WHEN status = ? AND delivered_date IS NOT NULL AND expected_delivery_date IS NOT NULL THEN 1 END) as on_time_eligible_count',
                 [TrackerStatus::DELIVERED->value]
             )
             ->first();

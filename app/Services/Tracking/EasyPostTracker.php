@@ -2,12 +2,15 @@
 
 namespace App\Services\Tracking;
 
+use App\Enums\Carrier;
+use App\Enums\ServiceLevel;
 use App\Enums\TrackerStatus;
 use App\Models\Tracker;
 use App\Models\TrackerData;
 use App\Models\User;
 use App\Services\Api\EasyPostClient;
 use Exception;
+use Illuminate\Support\Carbon;
 
 class EasyPostTracker implements CarrierTracker
 {
@@ -48,6 +51,10 @@ class EasyPostTracker implements CarrierTracker
             : $this->client->findByTrackingCode($tracker->tracking_number);
 
         if (! $payload) {
+            $payload = $this->client->createTracker($tracker->tracking_number, $tracker->carrier);
+        }
+
+        if (! $payload) {
             throw new Exception("EasyPost tracker not found for {$tracker->tracking_number}");
         }
 
@@ -76,10 +83,69 @@ class EasyPostTracker implements CarrierTracker
                 : $tracker->delivered_date,
         ]);
 
+        $this->applyServiceLevel($tracker, $payload);
+
         TrackerData::updateOrCreate(
             ['trackers_id' => $tracker->id],
             ['data' => $payload]
         );
+    }
+
+    /**
+     * @param  array<string, mixed>  $payload
+     */
+    protected function applyServiceLevel(Tracker $tracker, array $payload): void
+    {
+        if (! in_array($tracker->carrier, [Carrier::UPS->value, Carrier::FEDEX->value], true)) {
+            return;
+        }
+
+        $service = ServiceLevelMapper::forEasyPost($payload);
+        $originZip = $this->extractZip($payload['carrier_detail']['origin_location'] ?? null);
+        $destinationZip = $this->extractZip($payload['carrier_detail']['destination_location'] ?? null);
+        $shipDateString = $this->earliestPreTransit($payload);
+        $shipDate = $shipDateString
+            ? Carbon::parse($shipDateString)
+            : Carbon::parse($tracker->created_at);
+
+        $expected = app(ExpectedDeliveryCalculator::class)
+            ->calculate($shipDate, $service, $originZip, $destinationZip);
+
+        $tracker->update([
+            'service_type' => $payload['carrier_detail']['service'] ?? null,
+            'service_code' => $service === ServiceLevel::UNKNOWN ? null : $service->value,
+            'ship_date' => $shipDate->toDateString(),
+            'expected_delivery_date' => $expected?->toDateString(),
+            'origin_zip' => $originZip,
+            'destination_zip' => $destinationZip,
+        ]);
+    }
+
+    protected function extractZip(?string $location): ?string
+    {
+        if (! is_string($location) || $location === '') {
+            return null;
+        }
+
+        if (preg_match('/\b(\d{5})(?:-\d{4})?\b\s*$/', trim($location), $matches)) {
+            return $matches[1];
+        }
+
+        return null;
+    }
+
+    /**
+     * @param  array<string, mixed>  $payload
+     */
+    protected function earliestPreTransit(array $payload): ?string
+    {
+        foreach ($payload['tracking_details'] ?? [] as $detail) {
+            if (($detail['status'] ?? null) === 'pre_transit') {
+                return $detail['datetime'] ?? null;
+            }
+        }
+
+        return null;
     }
 
     /**

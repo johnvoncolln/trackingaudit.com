@@ -15,6 +15,8 @@ class Tracker extends Model
         'status_time' => 'datetime',
         'delivery_date' => 'datetime',
         'delivered_date' => 'datetime',
+        'ship_date' => 'date',
+        'expected_delivery_date' => 'date',
     ];
 
     public function trackerData()

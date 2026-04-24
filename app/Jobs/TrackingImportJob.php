@@ -11,6 +11,11 @@ class TrackingImportJob implements ShouldQueue
 {
     use Queueable;
 
+    public int $tries = 5;
+
+    /** @var array<int, int> */
+    public array $backoff = [10, 30, 90, 300, 900];
+
     protected User $user;
 
     protected array $record;
