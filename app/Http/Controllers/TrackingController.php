@@ -6,6 +6,7 @@ use App\Http\Requests\TrackingRequest;
 use App\Models\Tracker;
 use App\Services\Tracking\TrackerFactory;
 use App\Services\TrackingRouter;
+use Illuminate\Support\Facades\Log;
 
 class TrackingController extends Controller
 {
@@ -37,6 +38,13 @@ class TrackingController extends Controller
                 ->with('flash.bannerStyle', 'success');
 
         } catch (\Exception $e) {
+            Log::error('tracking.update.failed', [
+                'tracker_id' => $tracker->id,
+                'tracking_number' => $tracker->tracking_number,
+                'carrier' => $tracker->carrier,
+                'exception' => $e,
+            ]);
+
             return redirect()->route('tracking.show', $tracker)
                 ->with('flash.banner', 'Unable to update tracking details. Please try again.')
                 ->with('flash.bannerStyle', 'danger');
@@ -52,6 +60,11 @@ class TrackingController extends Controller
 
             return view('tracking.show', ['tracker' => $tracker]);
         } catch (\Exception $e) {
+            Log::error('tracking.store.failed', [
+                'tracking_number' => $validated['tracking_number'] ?? null,
+                'exception' => $e,
+            ]);
+
             return back()->withErrors(['error' => 'Unable to retrieve tracking details. Please try again.']);
         }
     }

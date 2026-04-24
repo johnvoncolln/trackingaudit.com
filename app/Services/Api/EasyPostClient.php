@@ -58,15 +58,19 @@ class EasyPostClient
      */
     protected function normalizeList(mixed $response): array
     {
+        $trackers = null;
+
         if (is_object($response) && isset($response->trackers)) {
-            return array_map(fn ($t) => $this->normalize($t), $response->trackers);
+            $trackers = $response->trackers;
+        } elseif (is_array($response) && isset($response['trackers'])) {
+            $trackers = $response['trackers'];
         }
 
-        if (is_array($response) && isset($response['trackers'])) {
-            return array_map(fn ($t) => $this->normalize($t), $response['trackers']);
+        if (! is_array($trackers)) {
+            return [];
         }
 
-        return [];
+        return array_map(fn ($t) => $this->normalize($t), $trackers);
     }
 
     /**
@@ -76,6 +80,10 @@ class EasyPostClient
     {
         if (is_array($tracker)) {
             return $tracker;
+        }
+
+        if (is_object($tracker) && method_exists($tracker, '__toArray')) {
+            return $tracker->__toArray(true);
         }
 
         return json_decode(json_encode($tracker), true) ?? [];
