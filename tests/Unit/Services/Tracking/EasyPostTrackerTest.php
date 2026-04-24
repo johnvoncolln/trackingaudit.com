@@ -125,6 +125,30 @@ class EasyPostTrackerTest extends TestCase
         $this->assertSame(TrackerStatus::DELIVERED->value, $refreshed->status);
     }
 
+    public function test_extracts_zip_from_real_easypost_location_format(): void
+    {
+        $fixture = $this->fixture();
+        // Realistic EasyPost format with full street address + 9-digit ZIP before "US".
+        $fixture['carrier'] = 'UPS';
+        $fixture['carrier_detail']['service'] = 'UPS Next Day Air®';
+        $fixture['carrier_detail']['origin_location'] = '111 OAK VALLEY DR , NASHVILLE, TN, 372072916, US';
+        $fixture['carrier_detail']['destination_location'] = '3910 SE STARK ST , PORTLAND, OR, 97214, US';
+
+        $client = $this->createMock(\App\Services\Api\EasyPostClient::class);
+        $client->method('findByTrackingCode')->willReturn($fixture);
+
+        $user = \App\Models\User::factory()->create();
+
+        $tracker = (new \App\Services\Tracking\EasyPostTracker($client))->track($user, [
+            'tracking_number' => 'EZ1000000001',
+            'carrier' => 'UPS',
+        ]);
+
+        $this->assertSame('37207', $tracker->origin_zip);
+        $this->assertSame('97214', $tracker->destination_zip);
+        $this->assertSame(\App\Enums\ServiceLevel::UPS_NEXT_DAY_AIR->value, $tracker->service_code);
+    }
+
     public function test_update_falls_back_to_lookup_when_easypost_id_missing(): void
     {
         $fixture = $this->fixture();

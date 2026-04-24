@@ -127,8 +127,17 @@ class EasyPostTracker implements CarrierTracker
             return null;
         }
 
-        if (preg_match('/\b(\d{5})(?:-\d{4})?\b\s*$/', trim($location), $matches)) {
+        $location = trim($location);
+
+        // US ZIP (5 or ZIP+4, hyphen optional) followed by ", US" or end-of-string.
+        // Handles EasyPost format: "111 OAK VALLEY DR , NASHVILLE, TN, 372072916, US"
+        if (preg_match('/(\d{5})(?:-?\d{4})?\s*,?\s*(?:US\s*$|$)/i', $location, $matches)) {
             return $matches[1];
+        }
+
+        // Fallback: last 5-digit token anywhere in the string.
+        if (preg_match_all('/\b(\d{5})\b/', $location, $all)) {
+            return end($all[1]);
         }
 
         return null;

@@ -163,8 +163,14 @@ class BackfillExpectedDelivery extends Command
             return null;
         }
 
-        if (preg_match('/\b(\d{5})(?:-\d{4})?\b\s*$/', trim($location), $matches)) {
+        $location = trim($location);
+
+        if (preg_match('/(\d{5})(?:-?\d{4})?\s*,?\s*(?:US\s*$|$)/i', $location, $matches)) {
             return $matches[1];
+        }
+
+        if (preg_match_all('/\b(\d{5})\b/', $location, $all)) {
+            return end($all[1]);
         }
 
         return null;
